@@ -8,7 +8,7 @@ const NotFound = () => {
       </h1>
       <Link
         to="/"
-        className="border-none text-center px-3 py-2 inline-block rounded-sm bg-rose-800 text-white"
+        className="border-none text-center px-3 py-2 inline-block rounded-sm bg-green-800 text-white"
       >
         Return to Home
       </Link>

@@ -34,20 +34,21 @@ const ListPost = () => {
   }, []); // Empty dependency array ensures the effect runs only once
 
   return (
-    <div className="xl:col-span-7 xl:p-2 xl:rounded-xl bg-white xl:m-2">
+    <div className="xl:col-span-7 xl:p-2 xl:rounded-xl bg-white xl:m-2 ">
       {listPost?.data.map((post: IPost) => (
         <Post key={post.id} {...post} />
       ))}
     </div>
   );
 };
-const HomePage = () => {
+const NewFeedPage = () => {
   return (
     <div className="xl:grid xl:grid-cols-12">
       <LeftSidebar />
       <ListPost />
+      <div></div>
     </div>
   );
 };
 
-export default HomePage;
+export default NewFeedPage;

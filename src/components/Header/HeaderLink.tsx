@@ -1,7 +1,8 @@
 import { NavLink, NavLinkProps } from 'react-router-dom';
 
 type Props = NavLinkProps & {
-  text: string;
+  src: string;
+  alt: string;
 };
 
 const HeaderLink = (props: Props) => {
@@ -14,7 +15,14 @@ const HeaderLink = (props: Props) => {
       }
       {...props}
     >
-      {props.text}
+      <img
+        src={props.src}
+        alt={props.alt}
+        height={20}
+        width={20}
+        className="mx-3"
+        title={props.alt}
+      />
     </NavLink>
   );
 };

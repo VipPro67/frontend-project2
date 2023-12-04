@@ -1,45 +1,51 @@
+import { useState, useEffect } from 'react'; // Import React and useEffect
 import { Link } from 'react-router-dom';
-import HeaderLink from './HeaderLink';
-import { useState } from 'react';
-import { Bars3Icon } from '@heroicons/react/24/outline';
+import { IUser } from '../../../types';
+import { checkJwt } from '../../../utils/auth';
+// Assume you have a JWT stored in localStorage
 
 const Header = () => {
-  const [isNavOpen, setIsNavOpen] = useState(false);
-  
-  const toggleNav = () => {
-    setIsNavOpen((v) => !v);
-  };
+  const [user, setUser] = useState<IUser | null>(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const userData = await checkJwt();
+      setUser(userData);
+    };
+
+    fetchUser();
+  }, []); // Run once when the component mounts
 
   return (
-    <header className="flex items-center px-4 text-xl w-full max-w-screen-2xl flex-wrap justify-between md:justify-between mx-auto p-4">
+    <header className="sticky top-0 flex items-center px-4 text-xl w-full bg-clip-border rounded-xl md:h-[3rem] bg-gray-100 flex-wrap justify-between md:justify-between mx-auto p-1">
       <Link to="/" className="text-2xl font-bold text-green-900/70">
         #PETMD
       </Link>
-
-      <button
-        className="inline-flex items-center p-2 w-10 h-10 justify-center md:hidden stroke-2"
-        onClick={toggleNav}
-      >
-        <Bars3Icon className="w-6 h-6 stroke-2" />
-      </button>
-
-      <div className={`${isNavOpen ? '' : 'hidden'} w-fit md:block md:w-auto`}>
-        <ul className="text-base flex flex-col p-4 space-y-2 md:p-0 md:flex-row md:space-x-4 md:space-y-0">
-          <HeaderLink to="/" text="Home" />
-          <HeaderLink to="/friends" text="Friends" />
-          <HeaderLink to="/pets" text="Pets" />
-          <HeaderLink to="/groups" text="Groups" />
+      <div className="w-fit md:block md:w-auto">
+        <ul className="text-base flex flex-row p-4 space-y-2 md:p-0 space-x-4">
+          {/* ... */}
         </ul>
       </div>
-
-      <div className=' hidden md:block'>
-        <button className="justify-center hidden md:inline-flex">
-          <img
-            src="./default-avatar.png"
-            alt="Profile"
-            className="w-10 h-10 rounded-full"
-          />
-        </button>
+      <div className="hidden md:block">
+        {user ? (
+          <Link to={`/profile/${user.id}`}>
+            <button className="justify-center border bg-blue-300 hidden md:inline-flex">
+              <img
+                src={user?.avatar || './default-avatar.png'}
+                alt="Profile"
+                height={32}
+                width={32}
+                className="rounded-full"
+              />
+            </button>
+          </Link>
+        ) : (
+          <Link to="/sign-in">
+            <button className="border hover:border-indigo-600 bg-indigo-500 text-white px-2 py-1 rounded-lg shadow ring-1 ring-inset ring-gray-300">
+              Sign in
+            </button>
+          </Link>
+        )}
       </div>
     </header>
   );

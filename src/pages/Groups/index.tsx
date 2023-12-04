@@ -1,7 +1,13 @@
+import LeftSidebar from "../../components/LeftSidebar";
+
 const GroupsPage = () => {
   return (
-    <div className="max-w-screen-lg mx-auto flex flex-col gap-12">
-      GroupsPAGE
+    <div className='xl:grid xl:grid-cols-12'>
+      <LeftSidebar />
+      <div className=' col-span-7 bg-white rounded-xl m-2' >
+        <h1>Groups</h1>
+      </div>
+      <div></div>
     </div>
   );
 };
