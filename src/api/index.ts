@@ -5,7 +5,6 @@ import { IUser } from '../../types';
 export async function fetchPosts() {
   try {
     const response = await axios.get('http://localhost:3001/api/v1/posts');
-    console.log(response);
     return response.data;
   } catch (error) {
     console.error('Error fetching posts:', error);
@@ -94,6 +93,24 @@ export async function fetchFriendsRequest() {
     return response.data;
   } catch (error) {
     console.error(`Error fetching friends request for user:`, error);
+    throw error;
+  }
+}
+
+export async function fetchFriendsSearch(name: string) {
+  // search
+  try {
+    const response = await axios.get(
+      `http://localhost:3001/api/v1/users?search=${name}`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching friends for user:`, error);
     throw error;
   }
 }

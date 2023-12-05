@@ -17,7 +17,7 @@ const Header = () => {
   }, []); // Run once when the component mounts
 
   return (
-    <header className="sticky top-0 flex items-center px-4 text-xl w-full bg-clip-border rounded-xl md:h-[3rem] bg-gray-100 flex-wrap justify-between md:justify-between mx-auto p-1">
+    <header className="flex items-center px-4 text-xl w-full bg-clip-border rounded-xl md:h-[3rem] bg-gray-100 flex-wrap justify-between md:justify-between mx-auto p-1">
       <Link to="/" className="text-2xl font-bold text-green-900/70">
         #PETMD
       </Link>
@@ -26,16 +26,16 @@ const Header = () => {
           {/* ... */}
         </ul>
       </div>
-      <div className="hidden md:block">
+      <div className="block">
         {user ? (
           <Link to={`/profile/${user.id}`}>
-            <button className="justify-center border bg-blue-300 hidden md:inline-flex">
+            <button className="justify-center md:inline-flex h-12 w-12">
               <img
                 src={user?.avatar || './default-avatar.png'}
                 alt="Profile"
-                height={32}
-                width={32}
-                className="rounded-full"
+                height={45}
+                width={45}
+                className="rounded-full border"
               />
             </button>
           </Link>

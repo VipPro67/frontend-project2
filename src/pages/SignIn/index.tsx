@@ -42,7 +42,7 @@ const SignIn = () => {
   };
   return (
     <div className="flex items-center justify-center min-h-screen from-purple-900 via-indigo-800 to-indigo-500 bg-gradient-to-br">
-      <div className="w-full max-w-lg px-10 py-8 mx-auto bg-white border rounded-lg shadow-2xl">
+      <div className="w-full max-w-lg p-2 xl:px-10 xl:py-8 mx-auto bg-white border rounded-lg shadow-2xl">
         <div className="max-w-md mx-auto space-y-3">
           <h3 className="text-lg font-semibold">Sign In</h3>
           <div>
@@ -73,7 +73,7 @@ const SignIn = () => {
               ></input>
             </label>
           </div>
-          <div className="flex gap-3 pt-3 justify-between">
+          <div className="xl:flex gap-3 pt-3 justify-between">
             <button
               onClick={handleSignIn}
               className="border hover:border-indigo-600 px-4 py-2 rounded-lg shadow ring-1 ring-inset ring-gray-300"

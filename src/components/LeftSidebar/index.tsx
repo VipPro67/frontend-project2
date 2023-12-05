@@ -31,9 +31,9 @@ const LeftSidebar = () => {
     }
   }, []);
   return (
-    <div className="hidden xl:block xl:col-span-2  to-purple-900 via-indigo-800 from-indigo-500 bg-gradient-to-b">
-      <div className=" sticky top-[3rem] flex flex-col bg-clip-border text-gray-700  h-[calc(100vh-3rem)] max-w-[20rem] p-4 shadow-xl shadow-blue-gray-900/5">
-        <nav className="flex flex-col gap-1 p-2 font-sans text-base  text-gray-700 dark:text-white font-bold">
+    <div className="sticky top-0 xl:block xl:col-span-2  to-purple-200 via-indigo-200 from-indigo-500 bg-gradient-to-b">
+      <div className=" sticky top-[3rem] flex flex-col bg-clip-border text-gray-700  xl:h-[calc(100vh-3rem)] xl:max-w-[20rem] xl:p-4 shadow-xl shadow-blue-gray-900/5">
+        <nav className="flex flex-row xl:flex-col gap-1 xl:p-2 font-sans text-base  text-gray-700 dark:text-white font-bold">
           <NavLink
             to="/create-post"
             className={({ isActive }) =>
@@ -43,13 +43,13 @@ const LeftSidebar = () => {
             }
           >
             <img
-              src="./assets/icons/add-post.svg"
+              src="../../assets/icons/add-post.svg"
               height={32}
               width={32}
               alt="Create Post"
               className="mr-3"
             />
-            Create Post
+            <p className="hidden xl:block">Create Post</p>
           </NavLink>
           <NavLink
             to="/new-feed"
@@ -60,13 +60,13 @@ const LeftSidebar = () => {
             }
           >
             <img
-              src="./assets/icons/new-feed.svg"
+              src="../../assets/icons/new-feed.svg"
               height={32}
               width={32}
               alt="New Feed"
               className="mr-3"
             />
-            New Feed
+            <p className="hidden xl:block">New Feed</p>
           </NavLink>
           <NavLink
             to="/friends"
@@ -77,13 +77,13 @@ const LeftSidebar = () => {
             }
           >
             <img
-              src="./assets/icons/friend.svg"
+              src="../../assets/icons/friend.svg"
               height={32}
               width={32}
               alt="Friends"
               className="mr-3"
             />
-            Friends
+            <p className="hidden xl:block">Friends</p>
           </NavLink>
 
           <NavLink
@@ -95,13 +95,13 @@ const LeftSidebar = () => {
             }
           >
             <img
-              src="./assets/icons/pet-house.svg"
+              src="../../assets/icons/pet-house.svg"
               height={32}
               width={32}
               alt="Pets"
               className="mr-3"
             />
-            Pet
+            <p className="hidden xl:block">Pet</p>
           </NavLink>
           <NavLink
             to="/groups"
@@ -112,18 +112,18 @@ const LeftSidebar = () => {
             }
           >
             <img
-              src="./assets/icons/group.svg"
+              src="../../assets/icons/group.svg"
               height={32}
               width={32}
               alt="Groups"
               className="mr-3"
             />
-            Groups
+            <p className="hidden xl:block">Groups</p>
           </NavLink>
           <button
             type="button"
             className={
-              'flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none'
+              'hidden xl:flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none'
             }
             onClick={() => {
               localStorage.removeItem('access_token');
@@ -132,13 +132,13 @@ const LeftSidebar = () => {
             }}
           >
             <img
-              src="./assets/icons/logout.svg"
+              src="../../assets/icons/logout.svg"
               height={32}
               width={32}
               alt="Logout"
               className="mr-3"
             />
-            Logout
+            <p className="hidden xl:block">Logout</p>
           </button>
         </nav>
       </div>

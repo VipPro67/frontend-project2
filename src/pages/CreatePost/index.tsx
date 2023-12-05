@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import LeftSidebar from '../../components/LeftSidebar';
-import { useState } from 'react';
+import { ChangeEventHandler, useState } from 'react';
 import axios from 'axios';
 
 const CreatePost = () => {
@@ -10,6 +10,7 @@ const CreatePost = () => {
     tagNames: [] as string[],
     media: null as File | null,
   });
+  const [selectedMedia, setSelectedMedia] = useState<File | null>(null);
 
   const handleAddTag = () => {
     const tag = document.getElementById('tags') as HTMLInputElement;
@@ -25,17 +26,23 @@ const CreatePost = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const formData = new FormData();
+    formData.append('title', postData.title);
+    formData.append('description', postData.description);
+    formData.append('media', selectedMedia as File);
+
+    postData.tagNames.forEach((tag, index) => {
+      formData.append(`tagNames[${index}]`, tag);
+    });
+
     try {
-      axios.post(
-        'http://localhost:3001/api/v1/posts',
-        JSON.stringify(postData),
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-          },
-        }
-      );
+      console.log(postData);
+      axios.post('http://localhost:3001/api/v1/posts', formData, {
+        headers: {
+          'Content-Type': 'form-data',
+          Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+        },
+      });
     } catch (error) {
       console.log(error);
     }
@@ -130,17 +137,13 @@ const CreatePost = () => {
               </div>
             </div>
             <div className="grid grid-flow-row">
-              <label htmlFor="image">Image</label>
+              <label htmlFor="image">Media</label>
               <input
                 type="file"
                 id="image"
+                accept="image/*, video/*"
                 className="border border-gray-400 rounded-md p-2"
-                onChange={(e) =>
-                  setPostData({
-                    ...postData,
-                    media: e.target.files ? e.target.files[0] : null,
-                  })
-                }
+                onChange={(e) => setSelectedMedia(e.target.files?.[0] || null)}
               />
             </div>
             <button

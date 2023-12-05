@@ -52,6 +52,7 @@ export type IPost = {
   updated_at: string;
   user: IUser;
   media?: IMedia;
+  likes?: IUser[];
   comments?: IComment[];
   group_id?: string;
   tags?: ITag[];

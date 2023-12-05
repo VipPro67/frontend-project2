@@ -34,7 +34,7 @@ const ListPost = () => {
   }, []); // Empty dependency array ensures the effect runs only once
 
   return (
-    <div className="xl:col-span-7 xl:p-2 xl:rounded-xl bg-white xl:m-2">
+    <div className="xl:col-span-7 xl:rounded-xl bg-white">
       {listPost?.data.map((post: IPost) => (
         <Post key={post.id} {...post} />
       ))}

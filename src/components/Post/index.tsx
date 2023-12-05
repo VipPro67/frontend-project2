@@ -3,6 +3,7 @@ import { IComment, IMedia, IPost, ITag } from '../../../types';
 import Comment from '../Comment';
 import { fetchCommentsByPostId } from '../../api';
 import { Link } from 'react-router-dom';
+import { checkJwt } from '../../../utils/auth';
 
 const ListComment = (post: IPost) => {
   const [listComment, setListComment] = useState<IComment[] | null>(null);
@@ -85,6 +86,8 @@ const ListComment = (post: IPost) => {
 
 const Post = (post: IPost) => {
   const [showComments, setShowComments] = useState(false);
+  const [isOnwer, setIsOnwer] = useState(false);
+  const [liked, setLiked] = useState(false);
 
   const postCreatedAt = new Date(post.created_at);
   const currentTime = new Date();
@@ -144,14 +147,51 @@ const Post = (post: IPost) => {
     );
   };
   useEffect(() => {
-    // This function will be called when the component is about to unmount
+    isLiked();
+
+    const checkOwner = async () => {
+      const currentUser = await checkJwt();
+      if (currentUser) {
+        if (currentUser.id === post.user.id) {
+          setIsOnwer(true);
+        }
+      }
+    };
+    checkOwner();
     return () => {
       setShowComments(false);
     };
-  }, []);
+  }, [liked]);
+
+  const likePost = async () => {
+    // You need to implement the endpoint and handle the response accordingly
+    await fetch('http://localhost:3001/api/v1/posts/' + post.id + '/like', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + localStorage.getItem('access_token'),
+      },
+      body: JSON.stringify({
+        post_id: post.id,
+      }),
+    });
+  };
+
+  //check if user liked this post
+  const isLiked = async () => {
+    const currentUser = await checkJwt();
+    if (currentUser) {
+      const likedPost = post.likes?.find((like) => {
+        return like.id === currentUser.id;
+      });
+      if (likedPost) {
+        setLiked(true);
+      }
+    }
+  };
   return (
     <div
-      className="flex  bg-white shadow-lg rounded-lg md:mx-2 my-2"
+      className="flex  bg-white shadow-lg rounded-lg m-1"
       onMouseLeave={() => setShowComments(false)}
     >
       <div className="flex-row w-full items-start px-4 py-6">
@@ -181,6 +221,32 @@ const Post = (post: IPost) => {
                 </small>
               </div>
             </div>
+            <div className="flex items-center justify-between">
+              {isOnwer ? (
+                <div className="flex items-center justify-between">
+                  <button className="bg-red">
+                    <img
+                      src="./assets/icons/edit.svg"
+                      height={24}
+                      width={24}
+                      title="Edit"
+                      alt="Edit"
+                    ></img>
+                  </button>
+                  <button className="bg-red">
+                    <img
+                      src="./assets/icons/delete.svg"
+                      height={24}
+                      width={24}
+                      title="Delete"
+                      alt="Delete"
+                    ></img>
+                  </button>
+                </div>
+              ) : (
+                ''
+              )}
+            </div>
           </div>
 
           <p className="mt-3 text-gray-700 text-md font-bold">{post.title}</p>
@@ -191,17 +257,27 @@ const Post = (post: IPost) => {
           </div>
           <div className="mt-4 flex items-center">
             <div className="flex mr-2 text-gray-700 text-lg">
-              <button className=" bg-red">
-                <img
-                  src="./assets/icons/pet.svg"
-                  height={24}
-                  width={24}
-                  title="Like"
-                  alt="Like"
-                ></img>
+              <button className=" bg-red" onClick={likePost}>
+                {!liked ? (
+                  <img
+                    src="./assets/icons/like.svg"
+                    height={24}
+                    width={24}
+                    title="Like"
+                    alt="Like"
+                  ></img>
+                ) : (
+                  <img
+                    src="./assets/icons/liked.svg"
+                    height={24}
+                    width={24}
+                    title="Like"
+                    alt="Like"
+                  ></img>
+                )}
               </button>
 
-              <span className="ml-2 mr-8">{post.comments?.length ?? 0}</span>
+              <span className={'ml-2 mr-8'}>{post.likes?.length ?? 0}</span>
             </div>
             <div className="flex mr-2 text-gray-700 text-md">
               <button onClick={() => setShowComments(!showComments)}>
