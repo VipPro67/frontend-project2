@@ -1,9 +1,13 @@
-import { Link } from 'react-router-dom';
 import LeftSidebar from '../../components/LeftSidebar';
-import { ChangeEventHandler, useState } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 
 const CreatePost = () => {
+  const accessToken = localStorage.getItem('access_token');
+  if (!accessToken) {
+    window.location.href = '/sign-in';
+  }
+
   const [postData, setPostData] = useState({
     title: '',
     description: '',
@@ -24,8 +28,7 @@ const CreatePost = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSubmit = () => {
     const formData = new FormData();
     formData.append('title', postData.title);
     formData.append('description', postData.description);
@@ -34,26 +37,30 @@ const CreatePost = () => {
     postData.tagNames.forEach((tag, index) => {
       formData.append(`tagNames[${index}]`, tag);
     });
-
     try {
       console.log(postData);
-      axios.post('http://localhost:3001/api/v1/posts', formData, {
-        headers: {
-          'Content-Type': 'form-data',
-          Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-        },
-      });
+      const res = axios
+        .post('http://localhost:3001/api/v1/posts', formData, {
+          headers: {
+            'Content-Type': 'form-data',
+            Authorization: `Bearer ${accessToken}`,
+          },
+        })
+        .then((res) => {
+          res.status === 200 && alert('Post created successfully');
+          window.location.href = '/';
+        });
     } catch (error) {
       console.log(error);
     }
   };
 
   return (
-    <div className="xl:col-span-7 xl:p-2 xl:rounded-xl bg-white xl:m-2 h-{full-2rem}">
+    <div className="xl:col-span-10 xl:p-2 xl:rounded-xl bg-white xl:m-2 h-{full-2rem}">
       <div className="grid grid-flow-row justify-center items-center">
         <h1 className="text-2xl font-bold">Create Post</h1>
         <div className="lg:w-1/2 mx-auto">
-          <form className="grid grid-flow-row mx-2" onSubmit={handleSubmit}>
+          <form className="grid grid-flow-row mx-2">
             <div className="grid grid-flow-row">
               <label htmlFor="title">Title</label>
               <input
@@ -132,7 +139,6 @@ const CreatePost = () => {
                     </button>
                   </div>
                 ))}
-
                 <div className="flex flex-wrap"></div>
               </div>
             </div>
@@ -141,50 +147,19 @@ const CreatePost = () => {
               <input
                 type="file"
                 id="image"
-                accept="image/*, video/*"
+                accept=".jpg,.png,.jpeg,.mp4,.avi,.mkv,video/*"
                 className="border border-gray-400 rounded-md p-2"
                 onChange={(e) => setSelectedMedia(e.target.files?.[0] || null)}
               />
             </div>
-            <button
-              className="bg-blue-500 text-white rounded-md p-2 mt-2"
-              type="submit"
-            >
-              Create Post
-            </button>
           </form>
+          <button
+            className="bg-blue-500 text-white rounded-md p-2 mt-2"
+            onClick={handleSubmit}
+          >
+            Create Post
+          </button>
         </div>
-        {/* <div className="w-1/2">
-          <div className="grid grid-flow-row">
-            <h1 className="text-2xl font-bold">Preview Post</h1>
-            <div className="grid grid-flow-row">
-              <div className="grid grid-flow-row">
-                <div className="grid grid-flow-row">
-                  <h1 className="text-xl font-bold">{postData.title}</h1>
-                  <p className="text-sm">{postData.description}</p>
-                </div>
-                <div className="flex flex-wrap">
-                  {postData.tagNames.map((tag) => (
-                    <div
-                      key={tag}
-                      className="bg-gray-200 text-gray-700 text-sm font-semibold rounded-full py-1 px-2 m-1 flex items-center"
-                    >
-                      #{tag}
-                    </div>
-                  ))}
-                </div>
-                <div className="grid grid-flow-row">
-                  <img
-                    src={
-                      postData.media ? URL.createObjectURL(postData.media) : ''
-                    }
-                    alt="post"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div> */}
       </div>
     </div>
   );

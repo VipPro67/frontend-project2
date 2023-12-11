@@ -17,7 +17,7 @@ const Header = () => {
   }, []); // Run once when the component mounts
 
   return (
-    <header className="flex items-center px-4 text-xl w-full bg-clip-border rounded-xl md:h-[3rem] bg-gray-100 flex-wrap justify-between md:justify-between mx-auto p-1">
+    <header className=" xl:sticky xl:top-0 flex items-center px-4 text-xl w-full bg-clip-border rounded-xl md:h-[3rem] bg-gray-100 flex-wrap justify-between md:justify-between mx-auto p-1">
       <Link to="/" className="text-2xl font-bold text-green-900/70">
         #PETMD
       </Link>

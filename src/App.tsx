@@ -24,7 +24,7 @@ const router = createBrowserRouter(
       <Route path="/sign-in" element={<SignIn />} />
       <Route path="/sign-up" element={<SignUp />} />
       <Route path="/friends" element={<FriendsPage />} />
-      <Route path="/pets" element={<PetsPage />} />
+      <Route path="/my-pets" element={<PetsPage />} />
       <Route path="/groups" element={<GroupsPage />} />
       <Route path="/create-post" element={<CreatePostPage />} />
       <Route path="/profile/:id" element={<ProfilePage />} />

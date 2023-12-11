@@ -4,6 +4,7 @@ import Comment from '../Comment';
 import { fetchCommentsByPostId } from '../../api';
 import { Link } from 'react-router-dom';
 import { checkJwt } from '../../../utils/auth';
+import axios from 'axios';
 
 const ListComment = (post: IPost) => {
   const [listComment, setListComment] = useState<IComment[] | null>(null);
@@ -88,8 +89,8 @@ const Post = (post: IPost) => {
   const [showComments, setShowComments] = useState(false);
   const [isOnwer, setIsOnwer] = useState(false);
   const [liked, setLiked] = useState(false);
-
   const postCreatedAt = new Date(post.created_at);
+  const [isEditPost, setIsEditPost] = useState(false);
   const currentTime = new Date();
   const timeDifference = () => {
     var days = currentTime.getDate() - postCreatedAt.getDate();
@@ -130,10 +131,18 @@ const Post = (post: IPost) => {
           src={`${media.link}`}
           alt="Image"
           loading="lazy"
+          className="w-full h-full object-cover rounded-lg"
         />
       );
     } else if (media.type === 'video') {
-      return <video id={`${media.id}`} src={`${media.link}`} controls></video>;
+      return (
+        <video
+          className="w-full h-full object-cover rounded-lg"
+          id={`${media.id}`}
+          src={`${media.link}`}
+          controls
+        ></video>
+      );
     } else {
       return ''; // Handle other media types as needed
     }
@@ -141,14 +150,16 @@ const Post = (post: IPost) => {
 
   const getTagHtml = (tag: ITag) => {
     return (
-      <div className="bg-gray-200 text-gray-700 text-sm font-semibold rounded-full py-1 px-2 m-1 flex items-center">
+      <div
+        key={tag.id}
+        className="bg-gray-200 text-gray-700 text-sm font-semibold rounded-full py-1 px-2 m-1 flex items-center"
+      >
         <span className="mx-2">#{tag.name}</span>
       </div>
     );
   };
   useEffect(() => {
     isLiked();
-
     const checkOwner = async () => {
       const currentUser = await checkJwt();
       if (currentUser) {
@@ -164,7 +175,6 @@ const Post = (post: IPost) => {
   }, [liked]);
 
   const likePost = async () => {
-    // You need to implement the endpoint and handle the response accordingly
     await fetch('http://localhost:3001/api/v1/posts/' + post.id + '/like', {
       method: 'POST',
       headers: {
@@ -175,9 +185,9 @@ const Post = (post: IPost) => {
         post_id: post.id,
       }),
     });
+    setLiked(!liked);
   };
 
-  //check if user liked this post
   const isLiked = async () => {
     const currentUser = await checkJwt();
     if (currentUser) {
@@ -189,6 +199,226 @@ const Post = (post: IPost) => {
       }
     }
   };
+
+  const [postData, setPostData] = useState({
+    title: post.title,
+    description: post.description,
+    tagNames: post.tags ? post.tags.map((tag) => tag.name) : [],
+    media: post.media,
+  });
+  const [selectedMedia, setSelectedMedia] = useState<File | null>(null);
+  const handleAddTag = () => {
+    const tag = document.getElementById('tags') as HTMLInputElement;
+    if (tag.value) {
+      if (postData.tagNames.includes(tag.value)) {
+        alert('Tag already exist');
+        return;
+      }
+      setPostData({ ...postData, tagNames: [...postData.tagNames, tag.value] });
+      tag.value = '';
+    }
+  };
+  const handlerSubmitEdit = () => {
+    const formData = new FormData();
+    formData.append('title', postData.title);
+    formData.append('description', postData.description);
+    formData.append('media', selectedMedia as File);
+    postData.tagNames.forEach((tag, index) => {
+      formData.append(`tagNames[${index}]`, tag);
+    });
+    try {
+      console.log(postData);
+      const res = axios
+        .put('http://localhost:3001/api/v1/posts/' + post.id, formData, {
+          headers: {
+            'Content-Type': 'form-data',
+            Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+          },
+        })
+        .then((res) => {
+          res.status === 200 && alert('Post created successfully');
+          window.location.href = '/';
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const deletePost = async (id: string) => {
+    try {
+      confirm('Are you sure you want to delete this post?');
+      if (!confirm) return;
+      const res = await axios.delete(
+        'http://localhost:3001/api/v1/posts/' + id,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+          },
+        }
+      );
+      res.status === 200 && alert('Post deleted successfully');
+      window.location.href = '/';
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const editPost = () => {
+    return (
+      <div className="fixed z-10 inset-0 overflow-y-auto">
+        <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+          {/* Background overlay, show/hide based on modal state. */}
+          <div
+            className="fixed inset-0 transition-opacity"
+            aria-hidden="true"
+            onClick={() => setIsEditPost(false)}
+          >
+            <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+          </div>
+          {/* This element is to trick the browser into centering the modal contents. */}
+          <span
+            className="hidden sm:inline-block sm:align-middle sm:h-screen"
+            aria-hidden="true"
+          >
+            &#8203;
+          </span>
+          {/* Modal panel, show/hide based on modal state. */}
+          <div
+            className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="modal-headline"
+          >
+            <form className="xl:w-full xl:max-w-lg xl:p-4 m-2">
+              <div className="flex justify-between mb-2">
+                <h1 className="text-2xl font-bold text-gray-900">Edit Post</h1>
+                <button className="bg-red" onClick={() => deletePost(post.id)}>
+                  <img
+                    src="./assets/icons/delete.svg"
+                    height={24}
+                    width={24}
+                    title="Delete"
+                    alt="Delete"
+                  ></img>
+                </button>
+              </div>
+              <div className="grid grid-flow-row">
+                <label htmlFor="title">Title</label>
+                <input
+                  type="text"
+                  id="title"
+                  className="border border-gray-400 rounded-md p-2"
+                  value={postData.title}
+                  onChange={(e) =>
+                    setPostData({ ...postData, title: e.target.value })
+                  }
+                />
+              </div>
+              <div className="grid grid-flow-row">
+                <label htmlFor="content">Content</label>
+                <textarea
+                  id="content"
+                  className="border border-gray-400 rounded-md p-2"
+                  value={postData.description}
+                  onChange={(e) =>
+                    setPostData({ ...postData, description: e.target.value })
+                  }
+                />
+              </div>
+              <div className="grid grid-flow-row">
+                <label htmlFor="tags">
+                  <span className=" ml-2 text-sm text-gray-800 sm:text-base ">
+                    Tag
+                  </span>{' '}
+                </label>
+                <div className="md:grid md:grid-cols-12 items-center ">
+                  <input
+                    id="tags"
+                    className="mt-1 py-3 px-5 border-2 rounded-md outline-none w-full md:col-span-10 gap-2 "
+                    type="text"
+                    placeholder="Type something"
+                  />
+                  <div
+                    className="text-center py-3 px-7  h-fit w-fit text-sm font-medium bg-purple-500 text-gray-100 rounded-md cursor-pointer sm:w-min hover:bg-purple-700 hover:text-gray-50  mb-4 sm:mb-0"
+                    onClick={() => {
+                      handleAddTag();
+                    }}
+                  >
+                    <span>Add</span>
+                  </div>
+                </div>
+                <div className="flex flex-wrap">
+                  {postData.tagNames.map((tag) => (
+                    <div
+                      key={tag}
+                      className="bg-gray-200 text-gray-700 text-sm font-semibold rounded-full py-1 px-2 m-1 flex items-center"
+                    >
+                      {tag}
+                      <button title="Delete post">
+                        <svg
+                          className="w-3 h-3 ml-2 cursor-pointer"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                          xmlns="http://www.w3.org/2000/svg"
+                          onClick={() => {
+                            setPostData({
+                              ...postData,
+                              tagNames: postData.tagNames.filter(
+                                (t) => t !== tag
+                              ),
+                            });
+                          }}
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M6 18L18 6M6 6l12 12"
+                          ></path>
+                        </svg>
+                      </button>
+                    </div>
+                  ))}
+                  <div className="flex flex-wrap"></div>
+                </div>
+              </div>
+              <div className="grid grid-flow-row">
+                <label htmlFor="image">Media</label>
+                <input
+                  type="file"
+                  id="image"
+                  accept=".jpg,.png,.jpeg,.mp4,.avi,.mkv,video/*"
+                  className="border border-gray-400 rounded-md p-2"
+                  onChange={(e) =>
+                    setSelectedMedia(e.target.files?.[0] || null)
+                  }
+                />
+              </div>
+            </form>
+
+            <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+              <button
+                type="button"
+                className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-500 text-base font-medium text-white hover:bg-blue-700 focus:outline-none  sm:ml-3 sm:w-auto sm:text-sm"
+                onClick={() => handlerSubmitEdit()}
+              >
+                Add
+              </button>
+              <button
+                type="button"
+                className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-gray-50 text-base font-medium text-gray-700 hover:bg-gray-100 focus:outline-none  sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                onClick={() => setIsEditPost(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div
       className="flex  bg-white shadow-lg rounded-lg m-1"
@@ -224,7 +454,10 @@ const Post = (post: IPost) => {
             <div className="flex items-center justify-between">
               {isOnwer ? (
                 <div className="flex items-center justify-between">
-                  <button className="bg-red">
+                  <button
+                    className="bg-red"
+                    onClick={() => setIsEditPost(true)}
+                  >
                     <img
                       src="./assets/icons/edit.svg"
                       height={24}
@@ -233,22 +466,12 @@ const Post = (post: IPost) => {
                       alt="Edit"
                     ></img>
                   </button>
-                  <button className="bg-red">
-                    <img
-                      src="./assets/icons/delete.svg"
-                      height={24}
-                      width={24}
-                      title="Delete"
-                      alt="Delete"
-                    ></img>
-                  </button>
                 </div>
               ) : (
                 ''
               )}
             </div>
           </div>
-
           <p className="mt-3 text-gray-700 text-md font-bold">{post.title}</p>
           <p className="mt-3 text-gray-700 text-sm">{post.description}</p>
           {post.media ? getMediaHtml(post.media) : ''}
@@ -295,6 +518,7 @@ const Post = (post: IPost) => {
           </div>
         </div>
         {showComments && <ListComment {...post}></ListComment>}
+        {isEditPost ? editPost() : ''}
       </div>
     </div>
   );

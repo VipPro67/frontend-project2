@@ -1,67 +1,70 @@
-import { useEffect, useState } from 'react';
-import { fetchMyPets, fetchPetsSearch } from '../../api';
-import LeftSidebar from '../../components/LeftSidebar';
-import Pet from '../../components/Pet';
+import { useState } from 'react';
 import { IPet } from '../../../types';
-import { Link } from 'react-router-dom';
-type IResponse = {
-  data: IPet[];
-  total: number;
-  currentPage: number;
-  items_per_page: number;
-  totalPage: number;
-  nextPage: number | null;
-  prePage: number | null;
-};
-const PetsPage = () => {
-  const accessToken = localStorage.getItem('access_token');
-  if (!accessToken) {
-    window.location.href = '/sign-in';
-  }
-  const [listPets, setListPets] = useState<any | null>(null);
-  const [listFindPets, setListFindPets] = useState<any | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [view, setView] = useState('searchPets');
+import axios from 'axios';
+
+const Pet = (pet: IPet) => {
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedMedia, setSelectedMedia] = useState<File | null>(null);
   const [formData, setFormData] = useState({
-    name: '',
-    date_of_birth: '',
-    species: '',
-    sex: '',
-    breed: '',
-    description: '',
+    name: pet.name,
+    date_of_birth: pet.date_of_birth,
+    species: pet.species,
+    sex: pet.sex,
+    breed: pet.breed,
+    description: pet.description,
     avatar: null as File | null,
   });
-  const [selectedMedia, setSelectedMedia] = useState<File | null>(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const response: any = await fetchMyPets();
-      setListPets({
-        response,
-      });
-    };
-
-    fetchData();
-  }, []); // Empty dependency array ensures the effect runs only once
 
   const handlerSubmit = () => {
-    const formDataP = new FormData();
-    formDataP.append('name', formData.name);
-    formDataP.append('date_of_birth', formData.date_of_birth);
-    formDataP.append('species', formData.species);
-    formDataP.append('sex', formData.sex);
-    formDataP.append('breed', formData.breed);
-    formDataP.append('description', formData.description);
+    confirm('Are you sure you want to edit this pet?');
+    const formDataS = new FormData();
+    formDataS.append('name', formData.name);
+    formDataS.append('date_of_birth', formData.date_of_birth);
+    formDataS.append('species', formData.species);
+    formDataS.append('sex', formData.sex);
+    formDataS.append('breed', formData.breed);
+    formDataS.append('description', formData.description);
     if (selectedMedia) {
-      formDataP.append('avatar', selectedMedia);
+      formDataS.append('avatar', selectedMedia);
     }
-    try {
-    } catch (error) {
-      console.log(error);
-    }
+    axios
+      .put(`http://localhost:3001/api/v1/pets/${pet.id}`, formDataS, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+        },
+      })
+      .then((res) => {
+        if (res.status === 200) {
+          alert('Pet edited successfully');
+          window.location.href = '/my-pets';
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
-  const addNewPet = () => {
+  const handlerDelete = () => {
+    confirm('Are you sure you want to delete this pet?');
+    axios
+      .delete(`http://localhost:3001/api/v1/pets/${pet.id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+        },
+      })
+      .then((res) => {
+        if (res.status === 200) {
+          alert('Pet deleted successfully');
+          window.location.href = '/my-pets';
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const editPet = () => {
     return (
       <div className="fixed z-10 inset-0 overflow-y-auto">
         <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
@@ -69,7 +72,7 @@ const PetsPage = () => {
           <div
             className="fixed inset-0 transition-opacity"
             aria-hidden="true"
-            onClick={() => setIsModalOpen(false)}
+            onClick={() => setIsEditModalOpen(false)}
           >
             <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
           </div>
@@ -89,7 +92,18 @@ const PetsPage = () => {
           >
             <form className="w-full max-w-lg xl:p-4">
               <div className="grid mx-3 mb-6">
-                <h1 className="text-2xl font-bold">Add New Pet</h1>
+                <div className="flex justify-between p-2">
+                  <h1 className="text-2xl font-bold">Edit pet</h1>
+                  <button className="bg-red" onClick={() => handlerDelete()}>
+                    <img
+                      src="./assets/icons/delete.svg"
+                      height={24}
+                      width={24}
+                      title="Delete"
+                      alt="Delete"
+                    ></img>
+                  </button>
+                </div>
                 <div className="w-full px-3 mb-6 md:mb-0">
                   <label
                     className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
@@ -120,7 +134,11 @@ const PetsPage = () => {
                     id="pet-dob"
                     type="date"
                     placeholder="Buddy"
-                    value={formData.date_of_birth}
+                    value={
+                      new Date(formData.date_of_birth)
+                        .toISOString()
+                        .split('T')[0]
+                    }
                     onChange={(e) =>
                       setFormData({
                         ...formData,
@@ -234,12 +252,12 @@ const PetsPage = () => {
                 className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-500 text-base font-medium text-white hover:bg-blue-700 focus:outline-none  sm:ml-3 sm:w-auto sm:text-sm"
                 onClick={() => handlerSubmit()}
               >
-                Add
+                Edit
               </button>
               <button
                 type="button"
                 className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-gray-50 text-base font-medium text-gray-700 hover:bg-gray-100 focus:outline-none  sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
-                onClick={() => setIsModalOpen(false)}
+                onClick={() => setIsEditModalOpen(false)}
               >
                 Cancel
               </button>
@@ -250,177 +268,46 @@ const PetsPage = () => {
     );
   };
 
-  const handleSearch = async () => {
-    const search = document.getElementById('search') as HTMLInputElement;
-    const res: IResponse = await fetchPetsSearch(search.value);
-    setListFindPets(res.data);
-    console.log(listFindPets);
-  };
-  const showFindResults = () => {
-    return (
-      <div className="mx-3 mb-6 gap-1 grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2">
-        {listFindPets
-          ? listFindPets.map((pet: IPet) => (
-              <div className="w-full px-3 mb-6 border rounded overflow-hidden shadow-lg ">
-                <div className="max-w-sm">
-                  <img
-                    className="h-full hover:scale-105"
-                    src={
-                      pet.avatar
-                        ? pet.avatar
-                        : './assets/images/default-avatar.png'
-                    }
-                    alt="Buddy's Avatar"
-                  ></img>
-                  <div className="p-4">
-                    <div className="flex justify-between">
-                      <div className="font-bold text-xl mb-2">{pet.name}</div>
-                    </div>
-                    <p className="text-gray-700 text-base">
-                      <strong>Species:</strong> {pet.species}
-                    </p>
-                    <p className="text-gray-700 text-base">
-                      <strong>Sex:</strong> {pet.sex}
-                    </p>
-                    <p className="text-gray-700 text-base">
-                      <strong>Breed:</strong> {pet.breed}
-                    </p>
-                    <p className="text-gray-700 text-base">
-                      <strong>Date of Birth:</strong>{' '}
-                      {new Date(pet.date_of_birth).toLocaleDateString()}
-                    </p>
-                    <p className="text-gray-700 text-base">
-                      <strong>Description:</strong> {pet.description}
-                    </p>
-                  </div>
-                </div>{' '}
-                <div className="grid p-2">
-                  <b>Owner:</b>
-                  <div className="flex justify-start pl-5 items-center">
-                    <Link to={`/profile/${pet.owner.id}`}>
-                      <img
-                        className="w-10 h-10 rounded-full"
-                        src={pet.owner.avatar ? pet.owner.avatar : ''}
-                        alt=""
-                      />
-                    </Link>
-                    <div className="ml-2">
-                      <p className="text-sm font-medium text-gray-900">
-                        {pet.owner.first_name} {pet.owner.last_name}
-                      </p>
-                    </div>
-                  </div>
-                </div>{' '}
-              </div>
-            ))
-          : null}
-      </div>
-    );
-  };
-
   return (
-    <div className="xl:grid xl:grid-cols-12 ">
-      <LeftSidebar />
-      <div className=" xl:col-span-10 xl:p-2 xl:rounded-xl bg-white xl:m-2 ">
-        <div className=" gird">
-          <button
-            className={
-              view == 'searchPets'
-                ? 'm-2 border-2 rounded-2xl text-center font-bold p-2 underline'
-                : 'm-2 border-2 rounded-2xl text-center font-bold p-2'
-            }
-            onClick={() => setView('searchPets')}
-          >
-            Search Pet
-          </button>
-          <button
-            className={
-              view == 'myPets'
-                ? 'm-2 border-2 rounded-2xl text-center font-bold p-2 underline'
-                : 'm-2 border-2 rounded-2xl text-center font-bold p-2'
-            }
-            onClick={() => setView('myPets')}
-          >
-            My Pets
+    <div className="max-w-sm border rounded overflow-hidden shadow-lg grid grid-rows-2">
+      <img
+        className="h-full hover:scale-105"
+        src={pet.avatar ? pet.avatar : './assets/images/default-avatar.png'}
+        alt="Buddy's Avatar"
+      ></img>
+      <div className="p-4">
+        <div className="flex justify-between">
+          <div className="font-bold text-xl mb-2">{pet.name}</div>
+          <button className="bg-red" onClick={() => setIsEditModalOpen(true)}>
+            <img
+              src="./assets/icons/edit.svg"
+              height={24}
+              width={24}
+              title="Edit"
+              alt="Edit"
+            ></img>
           </button>
         </div>
-        {view == 'myPets' ? (
-          <div>
-            <h1
-              className="text-2xl text-center font-bold m-2"
-              onClick={() => {
-                setView('myPets');
-              }}
-            >
-              My Pets{' '}
-            </h1>
-            <div className="flex justify-end">
-              <button
-                className="bg-blue-500  hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                onClick={() => {
-                  setIsModalOpen(true);
-                }}
-              >
-                Add New Pet
-              </button>
-            </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 md:gap-4">
-              {listPets
-                ? listPets.response.map((pet: IPet) => (
-                    <Pet key={pet.id} {...pet} />
-                  ))
-                : null}
-            </div>
-          </div>
-        ) : null}
-        {isModalOpen ? addNewPet() : null}
-        {view == 'searchPets' ? (
-          <div>
-            <h1
-              className="text-2xl text-center font-bold m-2"
-              onClick={() => {
-                setView('FindPets');
-              }}
-            >
-              Find Pets{' '}
-            </h1>
-            <div className="grid grid-cols-3 gap-4">
-              {view ? (
-                <div className=" col-span-3">
-                  <div className="flex justify-between">
-                    <label className="m-2 w-[80%] h-12 ">
-                      <input
-                        id="search"
-                        type="search"
-                        className="h-9 px-2 text-lg w-full border-2 border-slate-950"
-                        placeholder="Search by name, species, breed or description"
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter') {
-                            handleSearch();
-                          }
-                        }}
-                      ></input>
-                    </label>
-                    <button onClick={handleSearch}>
-                      <img
-                        src="../../assets/icons/search.svg"
-                        height={32}
-                        width={32}
-                        alt="search"
-                        className="mx-2"
-                      />
-                    </button>
-                  </div>
-                  {showFindResults()}
-                </div>
-              ) : null}
-            </div>
-          </div>
-        ) : null}
+        <p className="text-gray-700 text-base">
+          <strong>Species:</strong> {pet.species}
+        </p>
+        <p className="text-gray-700 text-base">
+          <strong>Sex:</strong> {pet.sex}
+        </p>
+        <p className="text-gray-700 text-base">
+          <strong>Breed:</strong> {pet.breed}
+        </p>
+        <p className="text-gray-700 text-base">
+          <strong>Date of Birth:</strong>{' '}
+          {new Date(pet.date_of_birth).toLocaleDateString()}
+        </p>
+        <p className="text-gray-700 text-base">
+          <strong>Description:</strong> {pet.description}
+        </p>
       </div>
-      <div></div>
+      {isEditModalOpen ? editPet() : null}
     </div>
   );
 };
 
-export default PetsPage;
+export default Pet;

@@ -4,6 +4,7 @@ import { fetchFriendsRequest } from '../../api';
 import { fetchFriendsSearch } from '../../api';
 import { checkJwt } from '../../../utils/auth';
 import { IUser } from '../../../types';
+import { Link } from 'react-router-dom';
 
 type IResponse = {
   data: IUser[];
@@ -16,13 +17,13 @@ type IResponse = {
 };
 
 const FriendsPage = () => {
-  const [listRelationships, setListRelationships] = useState<any | null>(null); // Use state to handle asynchronous data
+  const [listRelationships, setListRelationships] = useState<any | null>(null);
 
-  const [currentUser, setCurrentUser] = useState<IUser | null>(null); // Use state to handle asynchronous data
+  const [currentUser, setCurrentUser] = useState<IUser | null>(null);
 
-  const [view, setView] = useState('friendsRequest');
+  const [view, setView] = useState('searchFriends');
 
-  const [searchResult, setSearchResult] = useState<any | null>(null); // Use state to handle asynchronous data
+  const [searchResult, setSearchResult] = useState<any | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -40,13 +41,10 @@ const FriendsPage = () => {
     fetchCurrentUser();
     fetchData();
   }, []);
-  const handleSearch = () => {
+  const handleSearch = async ()=> {
     const search = document.getElementById('search') as HTMLInputElement;
-
-    return async () => {
-      const response: IResponse = await fetchFriendsSearch(search.value);
-      setSearchResult(response.data);
-    };
+    const response: any = await fetchFriendsSearch(search.value);
+    setSearchResult(response.data);
   };
 
   const showlistFriendsRequest = () => {
@@ -58,10 +56,10 @@ const FriendsPage = () => {
           relationship.isFriend == true
         ) {
           return (
-            <div className="flex justify-between border rounded m-2">
+            <div className="flex justify-between border rounded m-2 p-2 max ">
               <div className="flex items-center">
                 <img
-                  className="w-10 h-10 rounded-full"
+                  className="w-20 h-20 rounded-full"
                   src={relationship.user.avatar}
                   alt=""
                 />
@@ -103,10 +101,10 @@ const FriendsPage = () => {
           return;
         } else
           return (
-            <div className="flex justify-between border rounded m-2">
+            <div className="flex justify-between border rounded m-2 p-2 max ">
               <div className="flex items-center">
                 <img
-                  className="w-10 h-10 rounded-full"
+                  className="w-20 h-20 rounded-full"
                   src={relationship.friend.avatar}
                   alt=""
                 />
@@ -142,10 +140,10 @@ const FriendsPage = () => {
           return;
         } else
           return (
-            <div className="flex justify-between border rounded m-2">
+            <div className="flex justify-between border rounded m-2 p-2 max ">
               <div className="flex items-center">
                 <img
-                  className="w-10 h-10 rounded-full"
+                  className="w-20 h-20 rounded-full"
                   src={relationship.friend.avatar}
                   alt=""
                 />
@@ -174,13 +172,15 @@ const FriendsPage = () => {
     if (searchResult) {
       return searchResult.map((user: any) => {
         return (
-          <div className="flex justify-between border rounded m-2">
+          <div className="flex justify-between border rounded m-2 p-2 max ">
             <div className="flex items-center">
-              <img
-                className="w-10 h-10 rounded-full"
-                src={user.avatar}
-                alt=""
-              />
+              <Link to={`/profile/${user.id}`}>
+                <img
+                  className="w-20 h-20 rounded-full"
+                  src={user.avatar}
+                  alt=""
+                />
+              </Link>
               <div className="ml-2">
                 <p className="text-sm font-medium text-gray-900">
                   {user.first_name} {user.last_name}
@@ -204,68 +204,90 @@ const FriendsPage = () => {
   return (
     <div className="xl:grid xl:grid-cols-12">
       <LeftSidebar />
-      <div className=" xl:col-span-7 xl:p-2 xl:rounded-xl  bg-white xl:m-2 ">
+      <div className=" xl:col-span-10  xl:p-2 xl:rounded-xl  bg-white xl:m-2 ">
+        <div className=" gird">
+          <button
+            className={
+              view == 'searchFriends'
+                ? 'm-2 border-2 rounded-2xl text-center font-bold p-2 underline'
+                : 'm-2 border-2 rounded-2xl text-center font-bold p-2'
+            }
+            onClick={() => setView('searchFriends')}
+          >
+            Search Friends
+          </button>
+          <button
+            className={
+              view == 'friendsRequest'
+                ? 'm-2 border-2 rounded-2xl text-center font-bold p-2 underline'
+                : 'm-2 border-2 rounded-2xl text-center font-bold p-2'
+            }
+            onClick={() => setView('friendsRequest')}
+          >
+            Friends Request
+          </button>
+          <button
+            className={
+              view == 'listFriends'
+                ? 'm-2 border-2 rounded-2xl text-center font-bold p-2 underline'
+                : 'm-2 border-2 rounded-2xl text-center font-bold p-2'
+            }
+            onClick={() => setView('listFriends')}
+          >
+            List Friends
+          </button>
+          <button
+            className={
+              view == 'friendsSent'
+                ? 'm-2 border-2 rounded-2xl text-center font-bold p-2 underline'
+                : 'm-2 border-2 rounded-2xl text-center font-bold p-2'
+            }
+            onClick={() => setView('friendsSent')}
+          >
+            Friends Sent
+          </button>
+        </div>
         <div className="items-left">
           <div>
-            <div>
-              <div className="">
-                <p className="text-lg mx-2 font-bold">Find Friend</p>
-              </div>
-              <div className="flex justify-between">
-                <label className="m-2 w-[80%] h-12 ">
-                  <input
-                    id="search"
-                    type="search"
-                    className="h-9 px-2 text-lg w-full border-2 border-slate-950"
-                    placeholder="Search by name"
-                  ></input>
-                </label>
-                <button onClick={handleSearch()}>
-                  <img
-                    src="../../assets/icons/search.svg"
-                    height={32}
-                    width={32}
-                    alt="search"
-                    className="mx-2"
-                  />
-                </button>
-              </div>
-              {showListSearch()}
-            </div>
             <div className="grid grid-cols-7">
               <div className="grid col-span-7 grid-cols-3 ">
-                <button
-                  className={
-                    view == 'friendsRequest'
-                      ? 'm-2 border-2 rounded-2xl text-center font-bold text-white bg-slate-700 underline'
-                      : 'm-2 border-2 rounded-2xl text-center font-bold text-white bg-slate-700'
-                  }
-                  onClick={() => setView('friendsRequest')}
-                >
-                  Friends Request
-                </button>
-                <button
-                  className={
-                    view == 'listFriends'
-                      ? 'm-2 border-2 rounded-2xl text-center font-bold text-white bg-slate-700 underline'
-                      : 'm-2 border-2 rounded-2xl text-center font-bold text-white bg-slate-700'
-                  }
-                  onClick={() => setView('listFriends')}
-                >
-                  List Friends
-                </button>
-                <button
-                  className={
-                    view == 'friendsSent'
-                      ? 'm-2 border-2 rounded-2xl text-center font-bold text-white bg-slate-700 underline'
-                      : 'm-2 border-2 rounded-2xl text-center font-bold text-white bg-slate-700'
-                  }
-                  onClick={() => setView('friendsSent')}
-                >
-                  Friends Sent
-                </button>
                 <div className="ml-2 col-span-7">
-                  <p className="text-sm font-medium text-gray-900"></p>
+                  {view == 'searchFriends' ? (
+                    <div>
+                      <div>
+                        <div className="">
+                          <p className="text-lg mx-2 font-bold">Find Friend</p>
+                        </div>
+                        <div className="flex justify-between">
+                          <label className="m-2 w-[80%] h-12 ">
+                            <input
+                              id="search"
+                              type="search"
+                              className="h-9 px-2 text-lg w-full border-2 border-slate-950"
+                              placeholder="Search by friend name"
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                  handleSearch();
+                                }
+                              }}
+                            ></input>
+                          </label>
+                          <button onClick={handleSearch}>
+                            <img
+                              src="../../assets/icons/search.svg"
+                              height={32}
+                              width={32}
+                              alt="search"
+                              className="mx-2"
+                            />
+                          </button>
+                        </div>
+                        {showListSearch()}
+                      </div>
+                    </div>
+                  ) : (
+                    <div></div>
+                  )}
                   {view == 'friendsRequest' ? (
                     <div>
                       <p className=" font-bold text-lg">Friends Request</p>
@@ -296,7 +318,6 @@ const FriendsPage = () => {
           </div>
         </div>
       </div>
-      <div></div>
     </div>
   );
 };

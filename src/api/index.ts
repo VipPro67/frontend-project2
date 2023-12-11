@@ -98,8 +98,10 @@ export async function fetchFriendsRequest() {
 }
 
 export async function fetchFriendsSearch(name: string) {
-  // search
   try {
+    if (name === '') {
+      return [];
+    }
     const response = await axios.get(
       `http://localhost:3001/api/v1/users?search=${name}`,
       {
@@ -128,6 +130,59 @@ export async function fetchMyPets() {
     return response.data;
   } catch (error) {
     console.error(`Error fetching my pet:`, error);
+    throw error;
+  }
+}
+
+export async function fetchPetsByUserId(id: string) {
+  try {
+    const response = await axios.get(
+      `http://localhost:3001/api/v1/pets/user/${id}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching pets for user ${id}:`, error);
+    throw error;
+  }
+}
+
+export async function fetchPetsById(id: string) {
+  try {
+    const response = await axios.get(`http://localhost:3001/api/v1/pets/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching pets ${id}:`, error);
+    throw error;
+  }
+}
+
+export async function fetchPetsSearch(search: string) {
+  try {
+    if (search === '') {
+      return [];
+    }
+
+    const response = await axios.get(
+      `http://localhost:3001/api/v1/pets?search=${search}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching pets `);
+    throw error;
+  }
+}
+
+export async function fetchGroupsSearch(search: string) {
+  try {
+    if (search === '') {
+      return [];
+    }
+    const response = await axios.get(
+      `http://localhost:3001/api/v1/groups?search=${search}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching groups `);
     throw error;
   }
 }

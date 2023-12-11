@@ -18,6 +18,7 @@ export type IGroup = {
   id: string;
   name: string;
   avatar?: string | null;
+  users?: IUser[];
 };
 export type IMedia = {
   id: string;
@@ -42,7 +43,7 @@ export type IPet = {
   breed: string;
   date_of_birth: string;
   description: string;
-  owner_id: string;
+  owner: IUser;
 };
 export type IPost = {
   id: string;

@@ -6,14 +6,10 @@ import { fetchPostsByUserId, fetchUsersById } from '../../api';
 import { checkJwt } from '../../../utils/auth';
 
 const ProfilePage = () => {
-  //get user id from url react router
   const userId = window.location.pathname.split('/')[2];
-
   const [user, setUser] = useState<IUser | null>(null);
   const [posts, setPosts] = useState([]);
-
   const [showEditProfile, setShowEditProfile] = useState(false);
-
   const handleEditProfile = async () => {
     try {
       await fetch(`http://localhost:3001/api/v1/users/${userId}`, {
@@ -94,7 +90,7 @@ const ProfilePage = () => {
             </div>
             {showEditProfile ? (
               <div className="flex flex-col gap-2">
-                <input
+                <input 
                   type="text"
                   className="border border-gray-300 rounded-md p-2"
                   value={user?.first_name}

@@ -81,12 +81,18 @@ const SignIn = () => {
               Sign in
             </button>
             <p>
-              Don't have an account?
+              Don't have an account?{' '}
               <a href="../sign-up" className="text-blue-500 underline">
                 Sign up
               </a>
             </p>
           </div>
+          <p className='text-center' >
+          I don't want to create an account yet.{' '}  
+            <a href="../" className="text-blue-500 underline">
+            Return to home page
+            </a>
+          </p>
         </div>
       </div>
     </div>
