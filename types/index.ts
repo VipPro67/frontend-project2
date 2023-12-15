@@ -55,7 +55,7 @@ export type IPost = {
   media?: IMedia;
   likes?: IUser[];
   comments?: IComment[];
-  group_id?: string;
+  group?: IGroup;
   tags?: ITag[];
 };
 export type IPostLike = {

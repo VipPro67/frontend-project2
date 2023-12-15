@@ -17,7 +17,9 @@ const Layout = () => {
     <div className="min-h-full flex flex-col font-sans text-neutral-800 bg-gray-200">
       <Header />
       <Suspense>
-        <Outlet />
+        <div className=' max-w-7xl w-full m-auto'>
+          <Outlet />
+        </div>
       </Suspense>
     </div>
   );

@@ -17,6 +17,13 @@ import NotFound from './pages/NotFound';
 
 import './App.css';
 import Layout from './components/Layout';
+import FriendsRequestPage from './pages/Friends/FriendsRequestPage';
+import FriendsSentPage from './pages/Friends/FriendsSentPage';
+import SearchFriendsPage from './pages/Friends/SeachFriendsPage';
+import MyPetsPage from './pages/Pets/MyPetsPage';
+import MyGroupsPage from './pages/Groups/MyGroupsPage';
+import GroupsProfilePage from './pages/Groups/GroupsProfilePage';
+
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route element={<Layout />}>
@@ -24,8 +31,14 @@ const router = createBrowserRouter(
       <Route path="/sign-in" element={<SignIn />} />
       <Route path="/sign-up" element={<SignUp />} />
       <Route path="/friends" element={<FriendsPage />} />
-      <Route path="/my-pets" element={<PetsPage />} />
-      <Route path="/groups" element={<GroupsPage />} />
+      <Route path="/friends/friends-request" element={<FriendsRequestPage />} />
+      <Route path="/friends/friends-sent" element={<FriendsSentPage />} />
+      <Route path="/friends/search" element={<SearchFriendsPage />} />
+      <Route path="/pets/my-pets" element={<MyPetsPage />} />
+      <Route path="/pets" element={<PetsPage />} />
+      <Route path="/groups" element={<MyGroupsPage />} />
+      <Route path="/groups/:id" element={<GroupsProfilePage />} />
+      <Route path="/groups/search" element={<GroupsPage />} />
       <Route path="/create-post" element={<CreatePostPage />} />
       <Route path="/profile/:id" element={<ProfilePage />} />
       <Route path="/new-feed" element={<NewFeedPage />} />

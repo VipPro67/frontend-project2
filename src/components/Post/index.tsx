@@ -34,7 +34,6 @@ const ListComment = (post: IPost) => {
 
     // Handle the response as needed (e.g., update state, show notifications)
     const result = await response.json();
-    console.log(result);
 
     // After submitting, you might want to refetch the comments
     const updatedComments = await fetchCommentsByPostId(post.id);
@@ -227,7 +226,6 @@ const Post = (post: IPost) => {
       formData.append(`tagNames[${index}]`, tag);
     });
     try {
-      console.log(postData);
       const res = axios
         .put('http://localhost:3001/api/v1/posts/' + post.id, formData, {
           headers: {
@@ -427,29 +425,82 @@ const Post = (post: IPost) => {
       <div className="flex-row w-full items-start px-4 py-6">
         <div className="w-full">
           <div className="flex items-center justify-between">
-            <div className="flex items-center justify-between">
-              <Link to={`/profile/${post.user.id}`}>
-                <img
-                  className="w-12 h-12 rounded-full object-cover mr-4 shadow"
-                  src={
-                    post.user.avatar ? post.user.avatar : './default-avatar.png'
-                  }
-                  alt="avatar"
-                ></img>
-              </Link>
-              <div>
-                <Link to={`/profile/${post.user.id}`}>
-                  <h2 className="text-lg font-semibold text-gray-900 -mt-1">
-                    {post.user.first_name} {post.user.last_name}{' '}
-                  </h2>
-                </Link>
-                <small className="text-sm text-gray-700">
-                  {
-                    //convert date to string format hh:mm:ss dd/mm/yyyy
-                    timeDifference()
-                  }
-                </small>
-              </div>
+            <div className="flex items-end justify-between">
+              {post.group ? (
+                <div className="flex items-end justify-between ">
+                  <div className="relative w-16 h-16">
+                    <Link to={`/groups/${post.group.id}`}>
+                      <img
+                        className="w-16 h-16 rounded-xl object-cover mr-4 shadow absolute top-0 left-0"
+                        src={
+                          post.group?.avatar
+                            ? post.group?.avatar
+                            : './default-avatar.png'
+                        }
+                        alt="avatar"
+                      ></img>
+                    </Link>
+                    <Link to={`/profile/${post.user.id}`}>
+                      <img
+                        className="w-10 h-10 rounded-full object-cover shadow absolute bottom-0 right-0"
+                        src={
+                          post.user?.avatar
+                            ? post.user?.avatar
+                            : './default-avatar.png'
+                        }
+                        alt="avatar"
+                      ></img>
+                    </Link>
+                  </div>
+
+                  <div>
+                    <Link
+                      to={`/groups/${post.user.id}`}
+                      className=" flex flex-col ml-2"
+                    >
+                      <h2 className="text-lg font-semibold text-gray-900 ">
+                        {post.group.name}
+                      </h2>
+                      <h2 className=" text-gray-900 -mt-1 font-semibold">
+                        {post.user.first_name} {post.user.last_name}{' '}
+                      </h2>
+                      <p className="text-sm text-gray-700">
+                        {
+                          //convert date to string format hh:mm:ss dd/mm/yyyy
+                          timeDifference()
+                        }
+                      </p>
+                    </Link>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-end justify-between">
+                  <Link to={`/profile/${post.user.id}`}>
+                    <img
+                      className="w-16 h-16 rounded-xl object-cover mr-4 shadow"
+                      src={
+                        post.user.avatar
+                          ? post.user.avatar
+                          : './default-avatar.png'
+                      }
+                      alt="avatar"
+                    ></img>
+                  </Link>
+                  <div>
+                    <Link to={`/profile/${post.user.id}`}>
+                      <h2 className="text-lg font-semibold text-gray-900 -mt-1">
+                        {post.user.first_name} {post.user.last_name}{' '}
+                      </h2>
+                    </Link>
+                    <small className="text-sm text-gray-700">
+                      {
+                        //convert date to string format hh:mm:ss dd/mm/yyyy
+                        timeDifference()
+                      }
+                    </small>
+                  </div>
+                </div>
+              )}
             </div>
             <div className="flex items-center justify-between">
               {isOnwer ? (

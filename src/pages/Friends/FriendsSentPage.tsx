@@ -3,15 +3,15 @@ import LeftSidebar from '../../components/LeftSidebar';
 import { fetchFriendsRequest } from '../../api';
 import { checkJwt } from '../../../utils/auth';
 import { IUser } from '../../../types';
-import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
-const FriendsPage = () => {
+const FriendsSentPage = () => {
   const [listRelationships, setListRelationships] = useState<any | null>(null);
 
   const [currentUser, setCurrentUser] = useState<IUser | null>(null);
 
-  const [view, setView] = useState('listFriends');
+  const [view, setView] = useState('friendsSent');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -32,27 +32,27 @@ const FriendsPage = () => {
     }
   }, [listRelationships]);
 
-  const handleUnfriend = async (id: number) => {
+  const handleCancelFriend = async (id: number) => {
     await axios
-      .get(`http://localhost:3001/api/v1/relationships/unfriend/${id}`, {
+      .get(`http://localhost:3001/api/v1/relationships/cancel-friend/${id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('access_token')}`,
         },
       })
       .then((res) => {
         if (res.status == 200) {
-          alert('Send unfriend request successfully');
+          alert('Send cancel request successfully');
         }
       });
   };
 
-  const showlistFriends = () => {
+  const showlistFriendsSent = () => {
     if (listRelationships) {
       return listRelationships.response.map((relationship: any) => {
         if (
           relationship.user.id != currentUser?.id ||
-          relationship.isFriend == false ||
-          relationship.status != 'confirmed'
+          relationship.isFriend != true ||
+          relationship.status != 'pending'
         ) {
           return;
         } else
@@ -75,9 +75,9 @@ const FriendsPage = () => {
                 <button
                   type="button"
                   className="inline-flex items-center px-3 py-2 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-red-500 hover:bg-red-600 focus:outline-none"
-                  onClick={() => handleUnfriend(relationship.friend.id)}
+                  onClick={() => handleCancelFriend(relationship.friend.id)}
                 >
-                  Unfriend
+                  Cancel
                 </button>
               </div>
             </div>
@@ -147,14 +147,10 @@ const FriendsPage = () => {
             <div className="grid grid-cols-7">
               <div className="grid col-span-7 grid-cols-3 ">
                 <div className="ml-2 col-span-7">
-                  {view == 'listFriends' ? (
-                    <div>
-                      <p className=" font-bold text-lg">List Friends</p>
-                      {showlistFriends()}
-                    </div>
-                  ) : (
-                    <div></div>
-                  )}
+                  <div>
+                    <p className=" font-bold text-lg">Friends Sent</p>
+                    {showlistFriendsSent()}
+                  </div>
                 </div>
               </div>
             </div>
@@ -165,4 +161,4 @@ const FriendsPage = () => {
   );
 };
 
-export default FriendsPage;
+export default FriendsSentPage;

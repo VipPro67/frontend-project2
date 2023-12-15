@@ -1,32 +1,22 @@
 import { useEffect, useState } from 'react';
-import { IPost, IUser } from '../../../types';
+import { IPet, IPost, IUser } from '../../../types';
 import LeftSidebar from '../../components/LeftSidebar';
 import Post from '../../components/Post';
-import { fetchPostsByUserId, fetchUsersById } from '../../api';
+import {
+  fetchPetsByUserId,
+  fetchPostsByUserId,
+  fetchUsersById,
+} from '../../api';
 import { checkJwt } from '../../../utils/auth';
+import Pet from '../../components/Pet';
 
 const ProfilePage = () => {
   const userId = window.location.pathname.split('/')[2];
   const [user, setUser] = useState<IUser | null>(null);
   const [posts, setPosts] = useState([]);
+  const [pets, setPets] = useState([]);
   const [showEditProfile, setShowEditProfile] = useState(false);
-  const handleEditProfile = async () => {
-    try {
-      await fetch(`http://localhost:3001/api/v1/users/${userId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-        },
-        body: JSON.stringify(user),
-      });
-      setShowEditProfile(false);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  //get user data
+  const [view, setView] = useState('pet');
   useEffect(() => {
     const fetchUser = async () => {
       const userData = await fetchUsersById(userId);
@@ -42,6 +32,13 @@ const ProfilePage = () => {
     };
     fetchPosts();
 
+    //get user pets
+    const fetchPets = async () => {
+      const petsData = await fetchPetsByUserId(userId);
+      setPets(petsData);
+    };
+
+    fetchPets();
     //check user auth to show edit profile
     const checkAuth = async () => {
       const userData = await checkJwt();
@@ -50,12 +47,12 @@ const ProfilePage = () => {
       }
     };
     checkAuth();
-  }, [userId]);
+  }, []);
 
   return (
     <div className="xl:grid xl:grid-cols-12">
       <LeftSidebar />
-      <div className=" xl:col-span-7 xl:p-2 xl:rounded-xl bg-white xl:m-2">
+      <div className=" xl:col-span-10 xl:p-2 xl:rounded-xl bg-white xl:m-2">
         <div className="max-w-2xl mx-auto">
           <div className="px-3 py-2">
             <div className="flex flex-col gap-1 text-center">
@@ -88,57 +85,42 @@ const ProfilePage = () => {
                 <span className="text-gray-400">Folowing</span>
               </div>
             </div>
-            {showEditProfile ? (
-              <div className="flex flex-col gap-2">
-                <input 
-                  type="text"
-                  className="border border-gray-300 rounded-md p-2"
-                  value={user?.first_name}
-                  onChange={(e) =>
-                    setUser({ ...user, first_name: e.target.value })
-                  }
-                />
-                <input
-                  type="text"
-                  className="border border-gray-300 rounded-md p-2"
-                  value={user?.last_name}
-                  onChange={(e) =>
-                    setUser({ ...user, last_name: e.target.value })
-                  }
-                />
-                <input
-                  type="text"
-                  className="border border-gray-300 rounded-md p-2"
-                  value={user?.email}
-                  onChange={(e) => setUser({ ...user, email: e.target.value })}
-                />
-                <button
-                  className="bg-pink-500 px-10 py-2 rounded-full text-white shadow-lg"
-                  onClick={handleEditProfile}
-                >
-                  Save
-                </button>
-              </div>
-            ) : (
-              ''
-            )}
-
             <div className="flex justify-center gap-2 my-5">
-              <button className="bg-pink-500 px-10 py-2 rounded-full text-white shadow-lg">
-                Follow
+              <button
+                className={`${
+                  view === 'post' ? 'bg-blue-500' : 'bg-gray-200'
+                } px-4 py-2 rounded-md font-semibold text-white`}
+                onClick={() => setView('post')}
+              >
+                Post
               </button>
-              <button className="bg-white border border-gray-500 px-10 py-2 rounded-full shadow-lg">
-                Message
+              <button
+                className={`${
+                  view === 'pet' ? 'bg-blue-500' : 'bg-gray-200'
+                } px-4 py-2 rounded-md font-semibold text-white`}
+                onClick={() => setView('pet')}
+              >
+                Pet
               </button>
             </div>
           </div>
         </div>
-        {
-          //show user posts
-          posts.map((post: IPost) => (
-            <Post {...post} />
-          ))
-        }
+        {view === 'post' &&
+          (posts.length === 0 ? (
+            <p>No post</p>
+          ) : (
+            posts.map((post: IPost) => <Post key={post.id} {...post} />)
+          ))}
+        {view === 'pet' &&
+          (pets.length === 0 ? (
+            <p>No pet</p>
+          ) : (
+            <div className="mx-3 mb-6 gap-1 grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2">
+              {pets.map((pet: IPet) => (
+                <Pet {...pet} />
+              ))}
+            </div>
+          ))}
       </div>
       <div></div>
     </div>

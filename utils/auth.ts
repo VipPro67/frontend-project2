@@ -2,14 +2,13 @@ import { IUser } from '../types';
 
 const getJwtToken = () => localStorage.getItem('access_token');
 
-// Function to check JWT and decode it
+let cachedUser: IUser | null = null;
+
 export const checkJwt = async () => {
-  let user: IUser = {
-    id: '',
-    first_name: '',
-    last_name: '',
-    avatar: '',
-  };
+  // Check if user information is already cached
+  if (cachedUser) {
+    return cachedUser;
+  }
   const token = getJwtToken();
 
   if (token) {
@@ -20,6 +19,7 @@ export const checkJwt = async () => {
       const currentTimestamp = Math.floor(Date.now() / 1000);
       if (decodedToken.exp < currentTimestamp) {
         console.error('JWT token has expired');
+        localStorage.removeItem('access_token');
         return null;
       }
 
@@ -37,8 +37,11 @@ export const checkJwt = async () => {
         }
       );
       const data = await response.json();
-      user = data;
-      return user;
+
+      // Cache the user information
+      cachedUser = data;
+
+      return cachedUser;
     } catch (error) {
       console.error('Error decoding or fetching data from JWT:', error);
       return null;

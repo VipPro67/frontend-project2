@@ -49,10 +49,19 @@ const SignIn = () => {
             <label className="block py-1">
               Your email
               <input
+                id="email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="border w-full py-2 px-2 rounded shadow hover:border-indigo-600 ring-1 ring-inset ring-gray-300 font-mono"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    const passwordInput = document.getElementById(
+                      'password'
+                    ) as HTMLInputElement;
+                    passwordInput.focus();
+                  }
+                }}
               ></input>
             </label>
             <p
@@ -66,10 +75,16 @@ const SignIn = () => {
             <label className="block py-1">
               Password
               <input
+                id="password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="border w-full py-2 px-2 rounded shadow hover:border-indigo-600 ring-1 ring-inset ring-gray-300 font-mono"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    handleSignIn();
+                  }
+                }}
               ></input>
             </label>
           </div>
@@ -87,10 +102,10 @@ const SignIn = () => {
               </a>
             </p>
           </div>
-          <p className='text-center' >
-          I don't want to create an account yet.{' '}  
+          <p className="text-center">
+            I don't want to create an account yet.{' '}
             <a href="../" className="text-blue-500 underline">
-            Return to home page
+              Return to home page
             </a>
           </p>
         </div>

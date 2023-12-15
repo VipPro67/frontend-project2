@@ -38,7 +38,6 @@ const CreatePost = () => {
       formData.append(`tagNames[${index}]`, tag);
     });
     try {
-      console.log(postData);
       const res = axios
         .post('http://localhost:3001/api/v1/posts', formData, {
           headers: {

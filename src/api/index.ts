@@ -12,22 +12,19 @@ export async function fetchPosts() {
   }
 }
 
-export async function fetchPostsRecomendation(id: string) {
+export async function fetchPostsRecomendation() {
   try {
-    const user: IUser | null = await checkJwt();
-    if (user) {
-      const response = await axios.get(
-        `http://localhost:3001/api/v1/posts/recommended`
-      );
-      console.log(response);
-      return response.data;
-    }
     const response = await axios.get(
-      `http://localhost:3001/api/v1/posts/${id}`
+      `http://localhost:3001/api/v1/posts/recommended`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+        },
+      }
     );
     return response.data;
   } catch (error) {
-    console.error(`Error fetching post ${id}:`, error);
+    console.error(`Error fetching post:`, error);
     throw error;
   }
 }
@@ -137,7 +134,12 @@ export async function fetchMyPets() {
 export async function fetchPetsByUserId(id: string) {
   try {
     const response = await axios.get(
-      `http://localhost:3001/api/v1/pets/user/${id}`
+      `http://localhost:3001/api/v1/pets/user/${id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+        },
+      }
     );
     return response.data;
   } catch (error) {
@@ -183,6 +185,86 @@ export async function fetchGroupsSearch(search: string) {
     return response.data;
   } catch (error) {
     console.error(`Error fetching groups `);
+    throw error;
+  }
+}
+
+export async function fetchGroupsByUserId(id: string) {
+  try {
+    const response = await axios.get(
+      `http://localhost:3001/api/v1/groups/user/${id}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching groups for user ${id}:`, error);
+    throw error;
+  }
+}
+
+export async function fetchGroupsById(id: string) {
+  try {
+    const response = await axios.get(
+      `http://localhost:3001/api/v1/groups/${id}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching groups ${id}:`, error);
+    throw error;
+  }
+}
+
+export async function fetchMyGroups() {
+  try {
+    const response = await axios.get(
+      'http://localhost:3001/api/v1/groups/my-groups',
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching groups:', error);
+    throw error;
+  }
+}
+
+export async function fetchPostsByUserGroups() {
+  try {
+    const response = await axios.get(
+      'http://localhost:3001/api/v1/posts/user/group',
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching groups:', error);
+    throw error;
+  }
+}
+
+export async function fetchPostsByGroupId(id: string) {
+  try {
+    if (!id) {
+      return [];
+    }
+    const response = await axios.get(
+      `http://localhost:3001/api/v1/posts/group/${id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching posts for group ${id}:`, error);
     throw error;
   }
 }
