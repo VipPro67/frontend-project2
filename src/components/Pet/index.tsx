@@ -1,10 +1,19 @@
-import { useState } from 'react';
-import { IPet } from '../../../types';
+import { useEffect, useState } from 'react';
+import { IPet, IUser } from '../../../types';
 import axios from 'axios';
+import { checkJwt } from '../../../utils/auth';
 
 const Pet = (pet: IPet) => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedMedia, setSelectedMedia] = useState<File | null>(null);
+  const [currentUser, setUser] = useState<IUser | null>(null);
+  useEffect(() => {
+    const fetchUser = async () => {
+      const userData = await checkJwt();
+      setUser(userData);
+    };
+    fetchUser();
+  }, []);
   const [formData, setFormData] = useState({
     name: pet.name,
     date_of_birth: pet.date_of_birth,
@@ -96,7 +105,7 @@ const Pet = (pet: IPet) => {
                   <h1 className="text-2xl font-bold">Edit pet</h1>
                   <button className="bg-red" onClick={() => handlerDelete()}>
                     <img
-                      src="./assets/icons/delete.svg"
+                      src="https://project2-media.s3.ap-southeast-1.amazonaws.com/assets/icons/delete.svg"
                       height={24}
                       width={24}
                       title="Delete"
@@ -278,15 +287,17 @@ const Pet = (pet: IPet) => {
       <div className="p-4">
         <div className="flex justify-between">
           <div className="font-bold text-xl mb-2">{pet.name}</div>
-          <button className="bg-red" onClick={() => setIsEditModalOpen(true)}>
-            <img
-              src="./assets/icons/edit.svg"
-              height={24}
-              width={24}
-              title="Edit"
-              alt="Edit"
-            ></img>
-          </button>
+          {currentUser?.id == pet.owner.id ? (
+            <button className="bg-red" onClick={() => setIsEditModalOpen(true)}>
+              <img
+                src="https://project2-media.s3.ap-southeast-1.amazonaws.com/assets/icons/edit.svg"
+                height={24}
+                width={24}
+                title="Edit"
+                alt="Edit"
+              ></img>
+            </button>
+          ) : null}
         </div>
         <p className="text-gray-700 text-base">
           <strong>Species:</strong> {pet.species}

@@ -29,7 +29,8 @@ const Header = () => {
       <div className="block">
         {user ? (
           <Link to={`/profile/${user.id}`}>
-            <button className="justify-center md:inline-flex h-12 w-12">
+            <button className="justify-center md:inline-flex h-12 w-12" 
+            >
               <img
                 src={user?.avatar || './default-avatar.png'}
                 alt="Profile"

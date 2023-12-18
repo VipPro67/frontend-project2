@@ -16,7 +16,7 @@ const ProfilePage = () => {
   const [posts, setPosts] = useState([]);
   const [pets, setPets] = useState([]);
   const [showEditProfile, setShowEditProfile] = useState(false);
-  const [view, setView] = useState('pet');
+  const [view, setView] = useState('post');
   useEffect(() => {
     const fetchUser = async () => {
       const userData = await fetchUsersById(userId);
@@ -28,7 +28,6 @@ const ProfilePage = () => {
     const fetchPosts = async () => {
       const postsData = await fetchPostsByUserId(userId);
       setPosts(postsData);
-      console.log(postsData);
     };
     fetchPosts();
 

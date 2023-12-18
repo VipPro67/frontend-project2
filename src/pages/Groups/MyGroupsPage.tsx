@@ -9,6 +9,7 @@ import {
   fetchPostsByUserGroups,
 } from '../../api';
 import Post from '../../components/Post';
+import axios from 'axios';
 
 type IResponse = {
   data: IGroup[];
@@ -59,21 +60,19 @@ const MyGroupsPage = () => {
     const formData = new FormData();
     formData.append('name', createGroupName);
     formData.append('avatar', selectedMedia || '');
-    fetch('http://localhost:3001/api/v1/groups', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-      body: formData,
-    })
-      .then((res) => res.json())
-      .then((_data) => {
 
+    axios.post('http://localhost:3001/api/v1/groups', formData, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      .then((_data) => {
         setIsModalOpen(false);
         setCreateGroupName('');
         setSelectedMedia(null);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.error('Error submitting group:', err));
   };
   const handleSearch = async () => {
     const search = document.getElementById('search') as HTMLInputElement;
@@ -223,9 +222,9 @@ const MyGroupsPage = () => {
     if (listGroups) {
       return listGroups.map((group: IGroup) => {
         return (
-          <div className="flex justify-between border rounded m-2">
-            <div className="flex items-center">
-              <Link to={`/groups/${group.id}`}>
+          <div className="flex justify-between border rounded m-2 p-2 shadow">
+            <div className="grid">
+              <Link to={`/groups/${group.id}`} className="mx-auto">
                 <img
                   className="w-20 h-20 rounded-full"
                   src={
@@ -239,9 +238,6 @@ const MyGroupsPage = () => {
               <div className="ml-2">
                 <p className="text-sm font-medium text-gray-900">
                   {group.name}
-                </p>
-                <p className="text-sm font-medium text-gray-900">
-                  {group.users?.length || 0} members
                 </p>
               </div>
             </div>
@@ -315,7 +311,7 @@ const MyGroupsPage = () => {
                   </label>
                   <button onClick={handleSearch}>
                     <img
-                      src="../../assets/icons/search.svg"
+                      src="https://project2-media.s3.ap-southeast-1.amazonaws.com/assets/icons/search.svg"
                       height={32}
                       width={32}
                       alt="search"
@@ -332,7 +328,7 @@ const MyGroupsPage = () => {
           <div className="grid">
             <div className="flex justify-between items-center p-2">
               <div className="flex items-center">
-                <h1 className="text-lg font-bold">Groups</h1>
+                <h1 className="text-lg font-bold">My Groups</h1>
               </div>
               <div className="flex items-center">
                 <button
@@ -344,7 +340,7 @@ const MyGroupsPage = () => {
                 {isModalOpen && createGroup()}
               </div>
             </div>
-            <div className="grid lg:grid-cols-3 md:grid-cols-2 ">{showListMyGroups()}</div>
+            <div className="flex">{showListMyGroups()}</div>
             {showListPostsInMyGroups()}
           </div>
         ) : null}

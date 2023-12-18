@@ -1,6 +1,4 @@
 import axios from 'axios';
-import { checkJwt } from '../../utils/auth';
-import { IUser } from '../../types';
 
 export async function fetchPosts() {
   try {
@@ -14,15 +12,20 @@ export async function fetchPosts() {
 
 export async function fetchPostsRecomendation() {
   try {
-    const response = await axios.get(
-      `http://localhost:3001/api/v1/posts/recommended`,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-        },
-      }
-    );
-    return response.data;
+    if (localStorage.getItem('access_token') !== null) {
+      const response = await axios.get(
+        `http://localhost:3001/api/v1/posts/recommended`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+          },
+        }
+      );
+      return response.data;
+    } else {
+      const response = await axios.get(`http://localhost:3001/api/v1/posts`);
+      return response.data;
+    }
   } catch (error) {
     console.error(`Error fetching post:`, error);
     throw error;

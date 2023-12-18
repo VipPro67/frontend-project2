@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { useState } from 'react';
 
 const SignIn = () => {
@@ -6,23 +7,26 @@ const SignIn = () => {
 
   const handleSignIn = async () => {
     try {
-      const response = await fetch('http://localhost:3001/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await axios.post(
+        'http://localhost:3001/auth/login',
+        {
+          email,
+          password,
         },
-        body: JSON.stringify({ email, password }),
-      });
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
 
-      if (response.ok) {
-        const data = await response.json();
-
-        // Assuming your API response includes access_token and refresh_token
-        const { access_token, refresh_token } = data;
+      if (response.status === 201) {
+        const { access_token, refresh_token } = response.data;
 
         // Handle successful sign-in, e.g., store tokens in state or local storage
         console.log('Sign-in successful');
-        //save assess token, refreshtoken into localstorage
+
+        // Save access token and refresh token into local storage
         localStorage.setItem('access_token', access_token);
         localStorage.setItem('refresh_token', refresh_token);
         window.location.href = '/';
@@ -32,7 +36,7 @@ const SignIn = () => {
         // Handle authentication failure, show error message, etc.
         console.error('Sign-in failed');
 
-        //show error message
+        // Show error message
         const textHelper = document.getElementById('texthelper');
         textHelper?.classList.remove('hidden');
       }

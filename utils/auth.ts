@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { IUser } from '../types';
 
 const getJwtToken = () => localStorage.getItem('access_token');
@@ -9,6 +10,7 @@ export const checkJwt = async () => {
   if (cachedUser) {
     return cachedUser;
   }
+  
   const token = getJwtToken();
 
   if (token) {
@@ -23,20 +25,14 @@ export const checkJwt = async () => {
         return null;
       }
 
-      // Token is valid, fetch user data
-      const myHeaders = new Headers({
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
+      // Token is valid, fetch user data using Axios
+      const response = await axios.get('http://localhost:3001/api/v1/users/my-profile', {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
       });
-
-      const response = await fetch(
-        `http://localhost:3001/api/v1/users/my-profile`,
-        {
-          method: 'GET',
-          headers: myHeaders,
-        }
-      );
-      const data = await response.json();
+      const data = response.data;
 
       // Cache the user information
       cachedUser = data;
@@ -47,5 +43,6 @@ export const checkJwt = async () => {
       return null;
     }
   }
+
   return null;
 };

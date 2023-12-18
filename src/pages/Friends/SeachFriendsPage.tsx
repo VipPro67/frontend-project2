@@ -163,7 +163,7 @@ const SearchFriendsPage = () => {
                         </label>
                         <button onClick={handleSearch}>
                           <img
-                            src="../../assets/icons/search.svg"
+                            src="https://project2-media.s3.ap-southeast-1.amazonaws.com/assets/icons/search.svg"
                             height={32}
                             width={32}
                             alt="search"

@@ -152,12 +152,14 @@ const CreatePost = () => {
               />
             </div>
           </form>
-          <button
-            className="bg-blue-500 text-white rounded-md p-2 mt-2"
-            onClick={handleSubmit}
-          >
-            Create Post
-          </button>
+          <div className="flex justify-end">
+            <button
+              className="bg-blue-500 text-white rounded-md p-2 mt-2"
+              onClick={handleSubmit}
+            >
+              Create Post
+            </button>
+          </div>
         </div>
       </div>
     </div>

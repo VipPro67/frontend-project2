@@ -17,7 +17,7 @@ const LeftSidebar = () => {
   return (
     <div className="sticky top-0 xl:block xl:col-span-2  to-purple-200 via-indigo-200 from-indigo-200 bg-gradient-to-b">
       <div className=" sticky top-[3rem] flex flex-col bg-clip-border text-gray-700  xl:h-[calc(100vh-3rem)] xl:max-w-[20rem] xl:p-4 shadow-xl shadow-blue-gray-900/5">
-        <nav className="flex flex-row xl:flex-col gap-1 xl:p-2 font-sans text-base  text-gray-700 font-bold">
+        <nav className="flex flex-row xl:flex-col gap-1 p-1 font-sans text-base  text-gray-700 font-bold">
           <NavLink
             to="/create-post"
             className={({ isActive }) =>
@@ -27,7 +27,7 @@ const LeftSidebar = () => {
             }
           >
             <img
-              src="../../assets/icons/add-post.svg"
+              src="https://project2-media.s3.ap-southeast-1.amazonaws.com/assets/icons/add-post.svg"
               height={32}
               width={32}
               alt="Create Post"
@@ -44,7 +44,7 @@ const LeftSidebar = () => {
             }
           >
             <img
-              src="../../assets/icons/new-feed.svg"
+              src="https://project2-media.s3.ap-southeast-1.amazonaws.com/assets/icons/new-feed.svg"
               height={32}
               width={32}
               alt="New Feed"
@@ -61,7 +61,7 @@ const LeftSidebar = () => {
             }
           >
             <img
-              src="../../assets/icons/friend.svg"
+              src="https://project2-media.s3.ap-southeast-1.amazonaws.com/assets/icons/friend.svg"
               height={32}
               width={32}
               alt="Friends"
@@ -79,7 +79,7 @@ const LeftSidebar = () => {
             }
           >
             <img
-              src="../../assets/icons/pet-house.svg"
+              src="https://project2-media.s3.ap-southeast-1.amazonaws.com/assets/icons/pet-house.svg"
               height={32}
               width={32}
               alt="Pets"
@@ -96,7 +96,7 @@ const LeftSidebar = () => {
             }
           >
             <img
-              src="../../assets/icons/group.svg"
+              src="https://project2-media.s3.ap-southeast-1.amazonaws.com/assets/icons/group.svg"
               height={32}
               width={32}
               alt="Groups"
@@ -108,16 +108,18 @@ const LeftSidebar = () => {
             <button
               type="button"
               className={
-                'hidden xl:flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 justify-center xl:justify-start outline-none'
+                'flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 justify-center xl:justify-start outline-none'
               }
               onClick={() => {
-                localStorage.removeItem('access_token');
-                document.cookie = 'user=; path=/; max-age=0';
-                window.location.href = '/';
+                if (confirm('Are you sure you want to logout?')) {
+                  localStorage.removeItem('access_token');
+                  document.cookie = 'user=; path=/; max-age=0';
+                  window.location.href = '/';
+                }
               }}
             >
               <img
-                src="../../assets/icons/logout.svg"
+                src="https://project2-media.s3.ap-southeast-1.amazonaws.com/assets/icons/logout.svg"
                 height={32}
                 width={32}
                 alt="Logout"

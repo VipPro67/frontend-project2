@@ -20,27 +20,35 @@ const ListComment = (post: IPost) => {
   }, [post.id]);
 
   const submitComment = async () => {
-    // You need to implement the endpoint and handle the response accordingly
-    const response = await fetch('http://localhost:3001/api/v1/comments', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        post_id: post.id,
-        comment: newComment,
-      }),
-    });
+    try {
+      // You need to implement the endpoint and handle the response accordingly
+      const response = await axios.post(
+        'http://localhost:3001/api/v1/comments',
+        {
+          post_id: post.id,
+          comment: newComment,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+          },
+        }
+      );
 
-    // Handle the response as needed (e.g., update state, show notifications)
-    const result = await response.json();
+      // Handle the response as needed (e.g., update state, show notifications)
+      const result = response.data;
 
-    // After submitting, you might want to refetch the comments
-    const updatedComments = await fetchCommentsByPostId(post.id);
-    setListComment(updatedComments);
+      // After submitting, you might want to refetch the comments
+      const updatedComments = await fetchCommentsByPostId(post.id);
+      setListComment(updatedComments);
 
-    // Clear the input field after submitting
-    setNewComment('');
+      // Clear the input field after submitting
+      setNewComment('');
+    } catch (error) {
+      // Handle any errors here
+      console.error('Error submitting comment:', error);
+    }
   };
   return (
     <section className="bg-white py-8 lg:py-16 antialiased">
@@ -64,9 +72,11 @@ const ListComment = (post: IPost) => {
             <textarea
               id="comment"
               rows={2}
-              className="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400"
+              className="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none"
               placeholder="Write a comment..."
               required
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
             ></textarea>
           </div>
           <button
@@ -88,6 +98,7 @@ const Post = (post: IPost) => {
   const [showComments, setShowComments] = useState(false);
   const [isOnwer, setIsOnwer] = useState(false);
   const [liked, setLiked] = useState(false);
+  const [totalLike, setTotalLike] = useState(post.likes?.length ?? 0);
   const postCreatedAt = new Date(post.created_at);
   const [isEditPost, setIsEditPost] = useState(false);
   const currentTime = new Date();
@@ -130,13 +141,13 @@ const Post = (post: IPost) => {
           src={`${media.link}`}
           alt="Image"
           loading="lazy"
-          className="w-full h-full object-cover rounded-lg"
+          className="w-full h-full object-cover rounded-lg max-h-screen"
         />
       );
     } else if (media.type === 'video') {
       return (
         <video
-          className="w-full h-full object-cover rounded-lg"
+          className="w-full h-full object-cover rounded-lg max-h-screen"
           id={`${media.id}`}
           src={`${media.link}`}
           controls
@@ -174,17 +185,29 @@ const Post = (post: IPost) => {
   }, [liked]);
 
   const likePost = async () => {
-    await fetch('http://localhost:3001/api/v1/posts/' + post.id + '/like', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + localStorage.getItem('access_token'),
-      },
-      body: JSON.stringify({
-        post_id: post.id,
-      }),
-    });
-    setLiked(!liked);
+    try {
+      // You need to implement the endpoint and handle the response accordingly
+      await axios.post(
+        `http://localhost:3001/api/v1/posts/${post.id}/like`,
+        {
+          post_id: post.id,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+          },
+        }
+      );
+
+      setLiked(!liked);
+
+      // Update total likes based on the current state
+      setTotalLike(liked ? totalLike - 1 : totalLike + 1);
+    } catch (error) {
+      // Handle any errors here
+      console.error('Error liking post:', error);
+    }
   };
 
   const isLiked = async () => {
@@ -241,7 +264,6 @@ const Post = (post: IPost) => {
       console.log(error);
     }
   };
-
   const deletePost = async (id: string) => {
     try {
       confirm('Are you sure you want to delete this post?');
@@ -260,7 +282,6 @@ const Post = (post: IPost) => {
       console.log(error);
     }
   };
-
   const editPost = () => {
     return (
       <div className="fixed z-10 inset-0 overflow-y-auto">
@@ -292,7 +313,7 @@ const Post = (post: IPost) => {
                 <h1 className="text-2xl font-bold text-gray-900">Edit Post</h1>
                 <button className="bg-red" onClick={() => deletePost(post.id)}>
                   <img
-                    src="./assets/icons/delete.svg"
+                    src="https://project2-media.s3.ap-southeast-1.amazonaws.com/assets/icons/delete.svg"
                     height={24}
                     width={24}
                     title="Delete"
@@ -394,7 +415,6 @@ const Post = (post: IPost) => {
                 />
               </div>
             </form>
-
             <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
               <button
                 type="button"
@@ -465,10 +485,7 @@ const Post = (post: IPost) => {
                         {post.user.first_name} {post.user.last_name}{' '}
                       </h2>
                       <p className="text-sm text-gray-700">
-                        {
-                          //convert date to string format hh:mm:ss dd/mm/yyyy
-                          timeDifference()
-                        }
+                        {timeDifference()}
                       </p>
                     </Link>
                   </div>
@@ -493,10 +510,7 @@ const Post = (post: IPost) => {
                       </h2>
                     </Link>
                     <small className="text-sm text-gray-700">
-                      {
-                        //convert date to string format hh:mm:ss dd/mm/yyyy
-                        timeDifference()
-                      }
+                      {timeDifference()}
                     </small>
                   </div>
                 </div>
@@ -510,7 +524,7 @@ const Post = (post: IPost) => {
                     onClick={() => setIsEditPost(true)}
                   >
                     <img
-                      src="./assets/icons/edit.svg"
+                      src="https://project2-media.s3.ap-southeast-1.amazonaws.com/assets/icons/edit.svg"
                       height={24}
                       width={24}
                       title="Edit"
@@ -534,7 +548,7 @@ const Post = (post: IPost) => {
               <button className=" bg-red" onClick={likePost}>
                 {!liked ? (
                   <img
-                    src="./assets/icons/like.svg"
+                    src="https://project2-media.s3.ap-southeast-1.amazonaws.com/assets/icons/like.svg"
                     height={24}
                     width={24}
                     title="Like"
@@ -542,7 +556,7 @@ const Post = (post: IPost) => {
                   ></img>
                 ) : (
                   <img
-                    src="./assets/icons/liked.svg"
+                    src="https://project2-media.s3.ap-southeast-1.amazonaws.com/assets/icons/liked.svg"
                     height={24}
                     width={24}
                     title="Like"
@@ -550,13 +564,12 @@ const Post = (post: IPost) => {
                   ></img>
                 )}
               </button>
-
-              <span className={'ml-2 mr-8'}>{post.likes?.length ?? 0}</span>
+              <span className={'ml-2 mr-8'}>{totalLike}</span>
             </div>
             <div className="flex mr-2 text-gray-700 text-md">
               <button onClick={() => setShowComments(!showComments)}>
                 <img
-                  src="./assets/icons/comment.svg"
+                  src="https://project2-media.s3.ap-southeast-1.amazonaws.com/assets/icons/comment.svg"
                   height={24}
                   width={24}
                   title="Comment"

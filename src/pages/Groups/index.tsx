@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react';
 import LeftSidebar from '../../components/LeftSidebar';
 
 import { Link } from 'react-router-dom';
-import { IGroup } from '../../../types';
+import { IGroup, IUser } from '../../../types';
 import { fetchGroupsSearch } from '../../api';
+import axios from 'axios';
+import { checkJwt } from '../../../utils/auth';
 
 type IResponse = {
   data: IGroup[];
@@ -22,14 +24,45 @@ const GroupsPage = () => {
   if (!accessToken) {
     window.location.href = '/sign-in';
   }
-
-  useEffect(() => {}, []);
+  const [currentUser, setCurrentUser] = useState<IUser | null>(null);
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      const response = await checkJwt();
+      setCurrentUser(response);
+    };
+    fetchCurrentUser();
+  }, []);
 
   const handleSearch = async () => {
     const search = document.getElementById('search') as HTMLInputElement;
     const response: IResponse = await fetchGroupsSearch(search.value);
     setSearchResult(response.data);
   };
+
+  const handleJoinGroup = async (id: string) => {
+    try {
+      await axios
+        .post(
+          `http://localhost:3001/api/v1/groups/${id}/join`,
+          {},
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        )
+        .then((res) => {
+          if (res.status == 201) {
+            alert('Join group successfully');
+            window.location.href = `/groups/${id}`;
+          }
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const showListSearch = () => {
     if (searchResult) {
       return searchResult.map((group: IGroup) => {
@@ -57,12 +90,25 @@ const GroupsPage = () => {
               </div>
             </div>
             <div className="flex items-center mr-2">
-              <button
-                type="button"
-                className="inline-flex items-center px-3 py-2 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-green-500 hover:bg-green-600 focus:outline-none"
-              >
-                Join group
-              </button>
+              {group?.users?.find((g) => g.id == currentUser?.id) ? (
+                <button
+                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                  onClick={() => {
+                    window.location.href = `/groups/${group.id}`;
+                  }}
+                >
+                  Go to group
+                </button>
+              ) : (
+                <button
+                  className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                  onClick={() => {
+                    handleJoinGroup(group.id);
+                  }}
+                >
+                  Join
+                </button>
+              )}
             </div>
           </div>
         );
@@ -123,7 +169,7 @@ const GroupsPage = () => {
                   </label>
                   <button onClick={handleSearch}>
                     <img
-                      src="../../assets/icons/search.svg"
+                      src="https://project2-media.s3.ap-southeast-1.amazonaws.com/assets/icons/search.svg"
                       height={32}
                       width={32}
                       alt="search"

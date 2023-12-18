@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { IComment } from '../../../types';
 
 const Comment = (comment: IComment) => {
@@ -36,10 +37,10 @@ const Comment = (comment: IComment) => {
     }
   };
   return (
-    <article className="p-6 my-2 text-base bg-white rounded-lg">
+    <article className=" p-2 m-2  text-base bg-white rounded-lg border">
       <footer className="flex justify-between items-center mb-2">
         <div className="flex items-center">
-          <p className="inline-flex items-center mr-3 text-sm text-gray-900  font-semibold">
+          <Link to={`/profile/${comment.user.id}`}>
             <img
               className="mr-2 w-6 h-6 rounded-full "
               src={
@@ -49,8 +50,10 @@ const Comment = (comment: IComment) => {
               }
               alt={comment.user.first_name + comment.user.last_name}
             ></img>
-            {comment.user.first_name + comment.user.last_name}{' '}
-          </p>
+            <p className="inline-flex items-center mr-3 text-sm text-gray-900  font-semibold">
+              {comment.user.first_name + comment.user.last_name}{' '}
+            </p>
+          </Link>
           <p className="text-sm text-gray-600">
             <time>{timeDifference()}</time>
           </p>
@@ -81,26 +84,17 @@ const Comment = (comment: IComment) => {
             aria-labelledby="dropdownMenuIconHorizontalButton"
           >
             <li>
-              <a
-                href="#"
-                className="block py-2 px-4 hover:bg-gray-100 "
-              >
+              <a href="#" className="block py-2 px-4 hover:bg-gray-100 ">
                 Edit
               </a>
             </li>
             <li>
-              <a
-                href="#"
-                className="block py-2 px-4 hover:bg-gray-100"
-              >
+              <a href="#" className="block py-2 px-4 hover:bg-gray-100">
                 Remove
               </a>
             </li>
             <li>
-              <a
-                href="#"
-                className="block py-2 px-4 hover:bg-gray-100"
-              >
+              <a href="#" className="block py-2 px-4 hover:bg-gray-100">
                 Report
               </a>
             </li>
@@ -108,7 +102,7 @@ const Comment = (comment: IComment) => {
         </div>
       </footer>
       <p className="text-gray-900 ">{comment.comment}</p>
-      <div className="flex items-center mt-4 space-x-4">
+      {/* <div className="flex items-center mt-4 space-x-4">
         <button
           type="button"
           className="flex items-center text-sm text-gray-500 hover:underline font-medium"
@@ -130,7 +124,7 @@ const Comment = (comment: IComment) => {
           </svg>
           Reply
         </button>
-      </div>
+      </div> */}
     </article>
   );
 };

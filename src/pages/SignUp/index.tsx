@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { useState } from 'react';
 
 const SignUp = () => {
@@ -10,39 +11,39 @@ const SignUp = () => {
 
   const handleSignUp = async () => {
     try {
-      const response = await fetch('http://localhost:3001/auth/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ 
-          email, 
+      const response = await axios.post(
+        'http://localhost:3001/auth/register',
+        {
+          email,
           password,
           first_name: firstName,
           last_name: lastName,
-         }),
-      });
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
 
-      if (response.ok) {
-        const data = await response.json();
+      if (response.status === 200) {
+        const { access_token, refresh_token } = response.data;
 
-        // Assuming your API response includes access_token and refresh_token
-        const { access_token, refresh_token } = data;
+        // Handle successful sign-up, e.g., store tokens in state or local storage
+        console.log('Sign-up successful');
 
-        // Handle successful sign-in, e.g., store tokens in state or local storage
-        console.log('Sign-in successful');
-        //save assess token, refreshtoken into localstorage
+        // Save access token and refresh token into local storage
         localStorage.setItem('access_token', access_token);
         localStorage.setItem('refresh_token', refresh_token);
         window.location.href = '/';
 
         // Additional actions like redirect or updating user state can be done here
       } else {
-        // Handle authentication failure, show error message, etc.
-        console.error('Sign-in failed');
+        // Handle sign-up failure, show error message, etc.
+        console.error('Sign-up failed');
       }
     } catch (error) {
-      console.error('Error during sign-in:', error);
+      console.error('Error during sign-up:', error);
     }
   };
   return (
