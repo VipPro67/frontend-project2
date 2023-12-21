@@ -21,6 +21,7 @@ import FriendsRequestPage from './pages/Friends/FriendsRequestPage';
 import FriendsSentPage from './pages/Friends/FriendsSentPage';
 import SearchFriendsPage from './pages/Friends/SeachFriendsPage';
 import MyPetsPage from './pages/Pets/MyPetsPage';
+import PairPetsPage from './pages/Pets/PairPetPage';
 import MyGroupsPage from './pages/Groups/MyGroupsPage';
 import GroupsProfilePage from './pages/Groups/GroupsProfilePage';
 
@@ -36,6 +37,7 @@ const router = createBrowserRouter(
       <Route path="/friends/search" element={<SearchFriendsPage />} />
       <Route path="/pets/my-pets" element={<MyPetsPage />} />
       <Route path="/pets" element={<PetsPage />} />
+      <Route path="/pets/pair/:id" element={<PairPetsPage />} />
       <Route path="/groups" element={<MyGroupsPage />} />
       <Route path="/groups/:id" element={<GroupsProfilePage />} />
       <Route path="/groups/search" element={<GroupsPage />} />

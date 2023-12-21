@@ -177,6 +177,27 @@ export async function fetchPetsSearch(search: string) {
   }
 }
 
+export async function fetchPetsPair(id: string) {
+  try {
+    if (id === '') {
+      return [];
+    }
+
+    const response = await axios.get(
+      `http://localhost:3001/api/v1/pets/pairing/${id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching pets `);
+    throw error;
+  }
+}
+
 export async function fetchGroupsSearch(search: string) {
   try {
     if (search === '') {

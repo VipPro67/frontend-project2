@@ -4,6 +4,7 @@ import LeftSidebar from '../../components/LeftSidebar';
 import Pet from '../../components/Pet';
 import { IPet } from '../../../types';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 const MyPetsPage = () => {
   const accessToken = localStorage.getItem('access_token');
   if (!accessToken) {
@@ -44,6 +45,20 @@ const MyPetsPage = () => {
     if (selectedMedia) {
       formDataP.append('avatar', selectedMedia);
     }
+    axios
+      .post('http://localhost:3001/api/v1/pets', formDataP, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then((res) => {
+        console.log(res);
+        setIsModalOpen(false);
+        window.location.reload();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
     try {
     } catch (error) {
       console.log(error);
@@ -221,7 +236,7 @@ const MyPetsPage = () => {
               <button
                 type="button"
                 className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-500 text-base font-medium text-white hover:bg-blue-700 focus:outline-none  sm:ml-3 sm:w-auto sm:text-sm"
-                onClick={() => handlerSubmit()}
+                onClick={handlerSubmit}
               >
                 Add
               </button>

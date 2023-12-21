@@ -279,25 +279,55 @@ const Pet = (pet: IPet) => {
 
   return (
     <div className="max-w-sm border rounded overflow-hidden shadow-lg grid grid-rows-2">
-      <img
-        className="h-full hover:scale-105"
-        src={pet.avatar ? pet.avatar : './assets/images/default-avatar.png'}
-        alt="Buddy's Avatar"
-      ></img>
+      <div>
+        <img
+          className="h-full hover:scale-105"
+          src={pet.avatar ? pet.avatar : './assets/images/default-avatar.png'}
+          alt="Buddy's Avatar"
+        ></img>
+      </div>
       <div className="p-4">
-        <div className="flex justify-between">
-          <div className="font-bold text-xl mb-2">{pet.name}</div>
-          {currentUser?.id == pet.owner.id ? (
-            <button className="bg-red" onClick={() => setIsEditModalOpen(true)}>
-              <img
-                src="https://project2-media.s3.ap-southeast-1.amazonaws.com/assets/icons/edit.svg"
-                height={24}
-                width={24}
-                title="Edit"
-                alt="Edit"
-              ></img>
-            </button>
-          ) : null}
+        <div className="flex items-center justify-between">
+          <div className="flex ">
+            <div className="font-bold text-xl mb-2">{pet.name}</div>
+            {currentUser?.id == pet.owner.id ? (
+              <button
+                className="bg-red"
+                onClick={() => {
+                  if (
+                    window.confirm('Are you sure you want to pair this pet?')
+                  ) {
+                    window.location.href = `/pets/pair/${pet.id}`;
+                  }
+                }}
+              >
+                <img
+                  src="https://project2-media.s3.ap-southeast-1.amazonaws.com/assets/icons/pair.svg"
+                  height={24}
+                  width={24}
+                  title="Pair"
+                  alt="Pair"
+                  className="ml-3"
+                ></img>
+              </button>
+            ) : null}
+          </div>
+          <div>
+            {currentUser?.id == pet.owner.id ? (
+              <button
+                className="bg-red"
+                onClick={() => setIsEditModalOpen(true)}
+              >
+                <img
+                  src="https://project2-media.s3.ap-southeast-1.amazonaws.com/assets/icons/edit.svg"
+                  height={24}
+                  width={24}
+                  title="Edit"
+                  alt="Edit"
+                ></img>
+              </button>
+            ) : null}
+          </div>
         </div>
         <p className="text-gray-700 text-base">
           <strong>Species:</strong> {pet.species}

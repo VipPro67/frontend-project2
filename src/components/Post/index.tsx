@@ -438,10 +438,7 @@ const Post = (post: IPost) => {
   };
 
   return (
-    <div
-      className="flex  bg-white shadow-lg rounded-lg m-1"
-      onMouseLeave={() => setShowComments(false)}
-    >
+    <div className="flex  bg-white shadow-lg rounded-lg m-1">
       <div className="flex-row w-full items-start px-4 py-6">
         <div className="w-full">
           <div className="flex items-center justify-between">

@@ -1,9 +1,19 @@
 import { Link } from 'react-router-dom';
 import { IComment } from '../../../types';
+import { useEffect, useState } from 'react';
+import { checkJwt } from '../../../utils/auth';
 
 const Comment = (comment: IComment) => {
   const commentCreateAt = new Date(comment.created_at);
   const currentTime = new Date();
+  const [currentUser, setCurrentUser] = useState<any>();
+
+  useEffect(() => {
+    const getCurrentUser = async () => {
+      setCurrentUser(checkJwt());
+    };
+    getCurrentUser();
+  }, []);
 
   const timeDifference = () => {
     var days = currentTime.getDate() - commentCreateAt.getDate();
@@ -63,6 +73,7 @@ const Comment = (comment: IComment) => {
           data-dropdown-toggle="dropdownComment1"
           className="inline-flex items-center p-2 text-sm font-medium text-center text-gray-500  bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50  "
           type="button"
+
         >
           <svg
             className="w-4 h-4"
@@ -84,25 +95,15 @@ const Comment = (comment: IComment) => {
             aria-labelledby="dropdownMenuIconHorizontalButton"
           >
             <li>
-              <a href="#" className="block py-2 px-4 hover:bg-gray-100 ">
-                Edit
-              </a>
-            </li>
-            <li>
               <a href="#" className="block py-2 px-4 hover:bg-gray-100">
                 Remove
-              </a>
-            </li>
-            <li>
-              <a href="#" className="block py-2 px-4 hover:bg-gray-100">
-                Report
               </a>
             </li>
           </ul>
         </div>
       </footer>
       <p className="text-gray-900 ">{comment.comment}</p>
-      {/* <div className="flex items-center mt-4 space-x-4">
+      <div className="flex items-center mt-4 space-x-4">
         <button
           type="button"
           className="flex items-center text-sm text-gray-500 hover:underline font-medium"
@@ -124,7 +125,7 @@ const Comment = (comment: IComment) => {
           </svg>
           Reply
         </button>
-      </div> */}
+      </div>
     </article>
   );
 };
