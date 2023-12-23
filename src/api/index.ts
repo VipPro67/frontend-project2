@@ -292,3 +292,20 @@ export async function fetchPostsByGroupId(id: string) {
     throw error;
   }
 }
+
+export async function fetchAllMyConservation() {
+  try {
+    const response = await axios.get(
+      `http://localhost:3001/api/v1/messages/conversations/all`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching conversation:`, error);
+    throw error;
+  }
+}

@@ -2,10 +2,12 @@ import { useState, useEffect } from 'react'; // Import React and useEffect
 import { Link } from 'react-router-dom';
 import { IUser } from '../../../types';
 import { checkJwt } from '../../../utils/auth';
-// Assume you have a JWT stored in localStorage
 
 const Header = () => {
   const [user, setUser] = useState<IUser | null>(null);
+  const [showAllChat, setShowAllChat] = useState(false);
+  const [showChat, setShowChat] = useState(false);
+  const [listConversation, setListConversation] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -14,6 +16,21 @@ const Header = () => {
     };
 
     fetchUser();
+
+    const fetchConversation = async () => {
+      const response = await fetch(
+        'http://localhost:3001/api/v1/messages/conversations',
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+          },
+        }
+      );
+      const data = await response.json();
+      setListConversation(data);
+    };
   }, []); // Run once when the component mounts
 
   return (
@@ -21,16 +38,23 @@ const Header = () => {
       <Link to="/" className="text-2xl font-bold text-green-900/70">
         #PETMD
       </Link>
-      <div className="w-fit md:block md:w-auto">
-        <ul className="text-base flex flex-row p-4 space-y-2 md:p-0 space-x-4">
-          {/* ... */}
-        </ul>
-      </div>
-      <div className="block">
+
+      <div className="block gap-2">
+        {user ? (
+          <Link to="/messager">
+            <button className="justify-center md:inline-flex mr-8">
+              <img
+                src="https://project2-media.s3.ap-southeast-1.amazonaws.com/assets/icons/chat.svg"
+                alt="Chat"
+                width={30}
+                height={30}
+              />
+            </button>
+          </Link>
+        ) : null}
         {user ? (
           <Link to={`/profile/${user.id}`}>
-            <button className="justify-center md:inline-flex h-12 w-12" 
-            >
+            <button className="justify-center md:inline-flex h-12 w-12">
               <img
                 src={user?.avatar || './default-avatar.png'}
                 alt="Profile"

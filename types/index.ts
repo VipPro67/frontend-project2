@@ -29,11 +29,16 @@ export type IMessage = {
   id: string;
   content: string;
   created_at: string;
-  sender_id: string;
-  receiver_id?: string | null;
-  group_id?: string | null;
-  media_id?: string | null;
+  sender: IUser;
+  receiver?: IUser | null;
+  group?: IGroup | null;
+  media?: IMedia | null;
 };
+
+export type IConversation = {
+  messages: IMessage[];
+};
+
 export type IPet = {
   id: string;
   avatar?: string | null;

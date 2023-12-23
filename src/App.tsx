@@ -24,6 +24,7 @@ import MyPetsPage from './pages/Pets/MyPetsPage';
 import PairPetsPage from './pages/Pets/PairPetPage';
 import MyGroupsPage from './pages/Groups/MyGroupsPage';
 import GroupsProfilePage from './pages/Groups/GroupsProfilePage';
+import MessagerPage from './pages/Messager';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -44,6 +45,7 @@ const router = createBrowserRouter(
       <Route path="/create-post" element={<CreatePostPage />} />
       <Route path="/profile/:id" element={<ProfilePage />} />
       <Route path="/new-feed" element={<NewFeedPage />} />
+      <Route path="/messager" element={<MessagerPage />} />
       <Route path="*" element={<NotFound />} />
     </Route>
   )
