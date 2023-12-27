@@ -43,7 +43,7 @@ const ListPost = () => {
 };
 const HomePage = () => {
   return (
-    <div className="xl:grid xl:grid-cols-12">
+    <div className="xl:grid xl:grid-cols-12 ">
       <LeftSidebar />
       <ListPost />
     </div>

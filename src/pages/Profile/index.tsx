@@ -9,6 +9,7 @@ import {
 } from '../../api';
 import { checkJwt } from '../../../utils/auth';
 import Pet from '../../components/Pet';
+import { Link } from 'react-router-dom';
 
 const ProfilePage = () => {
   const userId = window.location.pathname.split('/')[2];
@@ -17,6 +18,16 @@ const ProfilePage = () => {
   const [pets, setPets] = useState([]);
   const [showEditProfile, setShowEditProfile] = useState(false);
   const [view, setView] = useState('post');
+  const [currentUser, setCurrentUser] = useState<IUser | null>(null);
+
+  useEffect(() => {
+    async function fetchCurrentUser() {
+      const response: IUser | null = await checkJwt();
+      setCurrentUser(response);
+    }
+
+    fetchCurrentUser();
+  }, []);
   useEffect(() => {
     const fetchUser = async () => {
       const userData = await fetchUsersById(userId);
@@ -51,7 +62,7 @@ const ProfilePage = () => {
   return (
     <div className="xl:grid xl:grid-cols-12">
       <LeftSidebar />
-      <div className=" xl:col-span-10 xl:p-2 xl:rounded-xl bg-white xl:m-2">
+      <div className=" xl:col-span-10 xl:p-2 xl:rounded-xl bg-white xl:m-2 ">
         <div className="max-w-2xl mx-auto">
           <div className="px-3 py-2">
             <div className="flex flex-col gap-1 text-center">
@@ -101,6 +112,11 @@ const ProfilePage = () => {
               >
                 Pet
               </button>
+              <Link to={`/messager?user=${user?.id}`}>
+                <button className="bg-green-500 px-4 py-2 rounded-md font-semibold text-white">
+                  Chat Now
+                </button>
+              </Link>
             </div>
           </div>
         </div>

@@ -2,14 +2,21 @@ import { useEffect, useState } from 'react';
 import { fetchMyPets } from '../../api';
 import LeftSidebar from '../../components/LeftSidebar';
 import Pet from '../../components/Pet';
-import { IPet } from '../../../types';
+import { IPet, IUser } from '../../../types';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { checkJwt } from '../../../utils/auth';
 const MyPetsPage = () => {
-  const accessToken = localStorage.getItem('access_token');
-  if (!accessToken) {
-    window.location.href = '/sign-in';
-  }
+  const [currentUser, setCurrentUser] = useState<IUser | null>(null);
+
+  useEffect(() => {
+    async function fetchCurrentUser() {
+      const response: IUser | null = await checkJwt();
+      setCurrentUser(response);
+    }
+
+    fetchCurrentUser();
+  }, []);
   const [listPets, setListPets] = useState<any | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [view, setView] = useState('myPets');
@@ -48,7 +55,7 @@ const MyPetsPage = () => {
     axios
       .post('http://localhost:3001/api/v1/pets', formDataP, {
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${localStorage.getItem('access_token')}`,
         },
       })
       .then((res) => {

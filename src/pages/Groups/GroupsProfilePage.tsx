@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import LeftSidebar from '../../components/LeftSidebar';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { IGroup, IPost, IUser } from '../../../types';
 import { fetchGroupsById, fetchPostsByGroupId } from '../../api';
 import Post from '../../components/Post';
@@ -9,7 +9,16 @@ import axios from 'axios';
 
 const GroupsProfilePage = () => {
   const [listPost, setListPost] = useState<any | null>(null);
-  const [currentUser, setUser] = useState<IUser | null>(null);
+  const [currentUser, setCurrentUser] = useState<IUser | null>(null);
+
+  useEffect(() => {
+    async function fetchCurrentUser() {
+      const response: IUser | null = await checkJwt();
+      setCurrentUser(response);
+    }
+
+    fetchCurrentUser();
+  }, []);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isPopupCreatePostOpen, setIsPopupCreatePostOpen] = useState(false);
   const accessToken = localStorage.getItem('access_token');
@@ -114,11 +123,6 @@ const GroupsProfilePage = () => {
   const groupsId = id;
   const [group, setGroup] = useState<IGroup | null>(null);
   useEffect(() => {
-    const checkAuth = async () => {
-      const userData = await checkJwt();
-      setUser(userData);
-    };
-    checkAuth();
     const fetchData = async () => {
       const response: IPost = await fetchPostsByGroupId(groupsId || '');
       setListPost({
@@ -211,15 +215,6 @@ const GroupsProfilePage = () => {
             }
             alt=""
           />
-          <p className="text-lg font-medium text-gray-900 mx-auto">
-            {group.name}
-          </p>
-          <button onClick={() => setIsModalOpen(true)}>
-            <p className="text-md font-medium text-gray-900 m-2">
-              {group.users?.length || 0} members
-            </p>
-          </button>
-
           <div className="">
             {isMember ? (
               <button
@@ -237,6 +232,14 @@ const GroupsProfilePage = () => {
               </button>
             )}
           </div>
+          <p className="text-lg font-medium text-gray-900 mx-auto">
+            {group.name}
+          </p>
+          <button onClick={() => setIsModalOpen(true)}>
+            <p className="text-md font-medium text-gray-900 m-2">
+              {group.users?.length || 0} members
+            </p>
+          </button>
         </div>
       );
     }
@@ -390,9 +393,8 @@ const GroupsProfilePage = () => {
       <div className=" xl:col-span-10  xl:p-2 xl:rounded-xl  bg-white xl:m-2 ">
         <div className=" gird">
           {showGroupInfo()}
-          {isModalOpen ? showGroupMembers() : null}
-          {
-            group?.users?.find((user) => user.id == currentUser?.id) ? (
+          <div className="flex justify-between">
+            {group?.users?.find((user) => user.id == currentUser?.id) ? (
               <div className="flex justify-start">
                 <button
                   className="bg-blue-500 text-white rounded-md p-2 mt-2 "
@@ -401,15 +403,25 @@ const GroupsProfilePage = () => {
                   Create Post
                 </button>
               </div>
-            ) : null 
-          }
+            ) : null}
+            {group?.users?.find((user) => user.id == currentUser?.id) ? (
+              <div className="flex justify-start">
+                <Link to={`/messager?group=${group?.id}`}>
+                  <button className="bg-green-500 px-4 py-2 rounded-md font-semibold text-white">
+                    Chat Now
+                  </button>
+                </Link>
+              </div>
+            ) : null}
+          </div>
           {isPopupCreatePostOpen ? showPopupCreatePost() : null}
           <div className="grid ">
             {listPost
               ? listPost.response.map((post: any) => (
                   <Post key={post.id} {...post} />
                 ))
-              : null}
+              : null}{' '}
+            {isModalOpen ? showGroupMembers() : null}
           </div>
         </div>
       </div>

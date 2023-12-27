@@ -34,7 +34,7 @@ const Header = () => {
   }, []); // Run once when the component mounts
 
   return (
-    <header className=" xl:sticky xl:top-0 z-10 flex items-center px-4 text-xl w-full bg-clip-border rounded-xl md:h-[3rem] bg-gray-100 flex-wrap justify-between md:justify-between mx-auto p-1">
+    <header className=" xl:sticky xl:top-0 z-10 flex items-center px-4 text-xl w-full bg-clip-border rounded-xl bg-gray-100 flex-wrap justify-between md:justify-between mx-auto p-1">
       <Link to="/" className="text-2xl font-bold text-green-900/70">
         #PETMD
       </Link>
@@ -60,7 +60,7 @@ const Header = () => {
                 alt="Profile"
                 height={45}
                 width={45}
-                className="rounded-full border"
+                className="rounded-full border h-[45px] w-[45px]"
               />
             </button>
           </Link>

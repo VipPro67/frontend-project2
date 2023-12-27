@@ -43,10 +43,16 @@ const ListPost = () => {
   );
 };
 const NewFeedPage = () => {
-  const accessToken = localStorage.getItem('access_token');
-  if (!accessToken) {
-    window.location.href = '/sign-in';
-  }
+  const [currentUser, setCurrentUser] = useState<IUser | null>(null);
+
+  useEffect(() => {
+    async function fetchCurrentUser() {
+      const response: IUser | null = await checkJwt();
+      setCurrentUser(response);
+    }
+
+    fetchCurrentUser();
+  }, []);
   return (
     <div className="xl:grid xl:grid-cols-12">
       <LeftSidebar />

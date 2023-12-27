@@ -25,6 +25,22 @@ export const checkJwt = async () => {
         return null;
       }
 
+      //When the token is valid get new token using refresh token if it is expired
+      if (decodedToken.exp < currentTimestamp + 300) {
+        try {
+          const response = await axios.post('http://localhost:3001/auth/refresh-token', {
+            refreshToken: localStorage.getItem('refresh_token'),
+          });
+          const data = response.data;
+
+          localStorage.setItem('access_token', data.accessToken);
+          localStorage.setItem('refresh_token', data.refreshToken);
+        } catch (error) {
+          console.error('Error refreshing token:', error);
+          return null;
+        }
+      }
+
       // Token is valid, fetch user data using Axios
       const response = await axios.get('http://localhost:3001/api/v1/users/my-profile', {
         headers: {

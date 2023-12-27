@@ -1,13 +1,22 @@
 import { useEffect, useState } from 'react';
 import LeftSidebar from '../../components/LeftSidebar';
-import { IPet } from '../../../types';
+import { IPet, IUser } from '../../../types';
 import Pet from '../../components/Pet';
 import { Link } from 'react-router-dom';
 import { checkJwt } from '../../../utils/auth';
 import { fetchPetsPair } from '../../api';
 const PairPetsPage = () => {
   const petId = window.location.pathname.split('/')[3];
-  const [currentUser, setCurrentUser] = useState<any>();
+  const [currentUser, setCurrentUser] = useState<IUser | null>(null);
+
+  useEffect(() => {
+    async function fetchCurrentUser() {
+      const response: IUser | null = await checkJwt();
+      setCurrentUser(response);
+    }
+
+    fetchCurrentUser();
+  }, []);
   const [pet, setPet] = useState<IPet>();
   const [listFindPets, setListFindPets] = useState<any | null>(null);
 
@@ -19,11 +28,6 @@ const PairPetsPage = () => {
       setPet(data);
     };
     getPet();
-    const getCurrentUser = async () => {
-      setCurrentUser(checkJwt());
-    };
-    getCurrentUser();
-
     const fetchPets = async () => {
       const res = await fetchPetsPair(petId);
       setListFindPets(res);

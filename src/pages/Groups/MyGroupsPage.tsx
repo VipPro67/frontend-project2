@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import LeftSidebar from '../../components/LeftSidebar';
 
 import { Link } from 'react-router-dom';
-import { IGroup, IPost } from '../../../types';
+import { IGroup, IPost, IUser } from '../../../types';
 import {
   fetchGroupsSearch,
   fetchMyGroups,
@@ -10,6 +10,7 @@ import {
 } from '../../api';
 import Post from '../../components/Post';
 import axios from 'axios';
+import { checkJwt } from '../../../utils/auth';
 
 type IResponse = {
   data: IGroup[];
@@ -35,6 +36,16 @@ const MyGroupsPage = () => {
   if (!accessToken) {
     window.location.href = '/sign-in';
   }
+  const [currentUser, setCurrentUser] = useState<IUser | null>(null);
+
+  useEffect(() => {
+    async function fetchCurrentUser() {
+      const response: IUser | null = await checkJwt();
+      setCurrentUser(response);
+    }
+
+    fetchCurrentUser();
+  }, []);
 
   useEffect(() => {
     const fetchGroups = async () => {
@@ -61,7 +72,8 @@ const MyGroupsPage = () => {
     formData.append('name', createGroupName);
     formData.append('avatar', selectedMedia || '');
 
-    axios.post('http://localhost:3001/api/v1/groups', formData, {
+    axios
+      .post('http://localhost:3001/api/v1/groups', formData, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
           'Content-Type': 'multipart/form-data',

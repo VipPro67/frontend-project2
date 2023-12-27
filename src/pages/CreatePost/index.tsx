@@ -1,13 +1,10 @@
 import LeftSidebar from '../../components/LeftSidebar';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { IUser } from '../../../types';
+import { checkJwt } from '../../../utils/auth';
 
 const CreatePost = () => {
-  const accessToken = localStorage.getItem('access_token');
-  if (!accessToken) {
-    window.location.href = '/sign-in';
-  }
-
   const [postData, setPostData] = useState({
     title: '',
     description: '',
@@ -42,7 +39,7 @@ const CreatePost = () => {
         .post('http://localhost:3001/api/v1/posts', formData, {
           headers: {
             'Content-Type': 'form-data',
-            Authorization: `Bearer ${accessToken}`,
+            Authorization: `Bearer ${localStorage.getItem('access_token')}`,
           },
         })
         .then((res) => {
@@ -167,6 +164,7 @@ const CreatePost = () => {
 };
 
 const CreatePostPage = () => {
+
   return (
     <div className="xl:grid xl:grid-cols-12">
       <LeftSidebar />

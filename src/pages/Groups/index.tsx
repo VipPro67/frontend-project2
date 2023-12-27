@@ -20,16 +20,14 @@ type IResponse = {
 const GroupsPage = () => {
   const [searchResult, setSearchResult] = useState<IGroup[] | null>(null);
   const [view, setView] = useState('searchGroups');
-  const accessToken = localStorage.getItem('access_token');
-  if (!accessToken) {
-    window.location.href = '/sign-in';
-  }
   const [currentUser, setCurrentUser] = useState<IUser | null>(null);
+
   useEffect(() => {
-    const fetchCurrentUser = async () => {
-      const response = await checkJwt();
+    async function fetchCurrentUser() {
+      const response: IUser | null = await checkJwt();
       setCurrentUser(response);
-    };
+    }
+
     fetchCurrentUser();
   }, []);
 
@@ -48,7 +46,7 @@ const GroupsPage = () => {
           {
             headers: {
               'Content-Type': 'application/json',
-              Authorization: `Bearer ${accessToken}`,
+              Authorization: `Bearer ${localStorage.getItem('access_token')}`,
             },
           }
         )

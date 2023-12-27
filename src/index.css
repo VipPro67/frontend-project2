@@ -3,7 +3,7 @@
 @import 'tailwindcss/utilities';
 
 body::-webkit-scrollbar {
-  display: none;
+  display: auto;
 }
 
 body {
