@@ -15,37 +15,37 @@ const Comment = (comment: IComment) => {
     getCurrentUser();
   }, []);
 
-  const timeDifference = () => {
-    var days = currentTime.getDate() - commentCreateAt.getDate();
-    var hours = currentTime.getHours() - commentCreateAt.getHours();
-    var minutes = currentTime.getMinutes() - commentCreateAt.getMinutes();
-    var seconds = currentTime.getSeconds() - commentCreateAt.getSeconds();
+  // const timeDifference = () => {
+  //   var days = currentTime.getDate() - commentCreateAt.getDate();
+  //   var hours = currentTime.getHours() - commentCreateAt.getHours();
+  //   var minutes = currentTime.getMinutes() - commentCreateAt.getMinutes();
+  //   var seconds = currentTime.getSeconds() - commentCreateAt.getSeconds();
 
-    // Adjust for negative values
-    if (seconds < 0) {
-      minutes -= 1;
-      seconds += 60;
-    }
+  //   // Adjust for negative values
+  //   if (seconds < 0) {
+  //     minutes -= 1;
+  //     seconds += 60;
+  //   }
 
-    if (minutes < 0) {
-      hours -= 1;
-      minutes += 60;
-    }
-    if (hours < 0) {
-      days -= 1;
-      hours += 24;
-    }
+  //   if (minutes < 0) {
+  //     hours -= 1;
+  //     minutes += 60;
+  //   }
+  //   if (hours < 0) {
+  //     days -= 1;
+  //     hours += 24;
+  //   }
 
-    if (days > 0) {
-      return `${days} day${days > 1 ? 's' : ''} ago`;
-    } else if (hours > 0) {
-      return `${hours} hour${hours > 1 ? 's' : ''} ago`;
-    } else if (minutes > 0) {
-      return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
-    } else {
-      return 'Just a moment ago';
-    }
-  };
+  //   if (days > 0) {
+  //     return `${days} day${days > 1 ? 's' : ''} ago`;
+  //   } else if (hours > 0) {
+  //     return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+  //   } else if (minutes > 0) {
+  //     return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
+  //   } else {
+  //     return 'Just a moment ago';
+  //   }
+  // };
   return (
     <article className=" p-2 m-2  text-base bg-white rounded-lg border">
       <footer className="flex justify-between items-center mb-2">
@@ -65,7 +65,8 @@ const Comment = (comment: IComment) => {
             </p>
           </Link>
           <p className="text-sm text-gray-600">
-            <time>{timeDifference()}</time>
+            {/* <time>{timeDifference()}</time> */}
+            <time>{commentCreateAt.toDateString()}</time>
           </p>
         </div>
         <button

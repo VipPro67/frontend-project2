@@ -1,9 +1,18 @@
 import axios from 'axios';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { IUser } from '../../../types';
+import { checkJwt } from '../../../utils/auth';
 
 const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  useEffect(() => {
+    async function checkHadUser() {
+      if (await checkJwt()) window.location.href = '/';
+    }
+
+    checkHadUser();
+  }, []);
 
   const handleSignIn = async () => {
     // Check if email and password are not empty

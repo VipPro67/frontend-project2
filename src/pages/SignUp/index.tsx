@@ -1,5 +1,6 @@
 import axios from 'axios';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { checkJwt } from '../../../utils/auth';
 
 const SignUp = () => {
   const [email, setEmail] = useState('');
@@ -7,7 +8,13 @@ const SignUp = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [firstName, setFristName] = useState('');
   const [lastName, setLastName] = useState('');
+  useEffect(() => {
+    async function checkHadUser() {
+      if (await checkJwt()) window.location.href = '/';
+    }
 
+    checkHadUser();
+  }, []);
   const handleSignUp = async () => {
     // Check if information are not empty
     if (!email || !password || !confirmPassword || !firstName || !lastName) {
@@ -130,7 +137,13 @@ const SignUp = () => {
               ></input>
             </label>
           </div>
-          <div className="flex gap-3 pt-3 justify-between float-right">
+          <div className="flex gap-3 pt-3 justify-between">
+            <p className="text-left">
+              I don't want to create an account yet.{' '}
+              <a href="../" className="text-blue-500 underline">
+                <p>Return to home page</p>
+              </a>
+            </p>
             <button
               onClick={handleSignUp}
               className="border hover:border-indigo-600 px-4 py-2 rounded-lg shadow ring-1 ring-inset ring-gray-300"

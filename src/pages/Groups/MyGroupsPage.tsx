@@ -71,6 +71,14 @@ const MyGroupsPage = () => {
     const formData = new FormData();
     formData.append('name', createGroupName);
     formData.append('avatar', selectedMedia || '');
+    if (!createGroupName) {
+      alert('Please enter group name');
+      return;
+    }
+    if (!selectedMedia) {
+      alert('Please choose group image');
+      return;
+    }
 
     axios
       .post('http://localhost:3001/api/v1/groups', formData, {
@@ -83,6 +91,7 @@ const MyGroupsPage = () => {
         setIsModalOpen(false);
         setCreateGroupName('');
         setSelectedMedia(null);
+        window.location.href = '/groups';
       })
       .catch((err) => console.error('Error submitting group:', err));
   };

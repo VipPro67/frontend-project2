@@ -9,6 +9,10 @@ import axios from 'axios';
 const ListComment = (post: IPost) => {
   const [listComment, setListComment] = useState<IComment[] | null>(null);
   const [newComment, setNewComment] = useState<string>('');
+  const accessToken = localStorage.getItem('access_token');
+  if (!accessToken) {
+    window.location.href = '/sign-in';
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -21,6 +25,10 @@ const ListComment = (post: IPost) => {
 
   const submitComment = async () => {
     try {
+      if (newComment === '') {
+        alert('Please enter your comment');
+        return;
+      }
       // You need to implement the endpoint and handle the response accordingly
       const response = await axios.post(
         'http://localhost:3001/api/v1/comments',
@@ -102,37 +110,37 @@ const Post = (post: IPost) => {
   const postCreatedAt = new Date(post.created_at);
   const [isEditPost, setIsEditPost] = useState(false);
   const currentTime = new Date();
-  const timeDifference = () => {
-    var days = currentTime.getDate() - postCreatedAt.getDate();
-    var hours = currentTime.getHours() - postCreatedAt.getHours();
-    var minutes = currentTime.getMinutes() - postCreatedAt.getMinutes();
-    var seconds = currentTime.getSeconds() - postCreatedAt.getSeconds();
+  // const timeDifference = () => {
+  //   var days = currentTime.getDate() - postCreatedAt.getDate();
+  //   var hours = currentTime.getHours() - postCreatedAt.getHours();
+  //   var minutes = currentTime.getMinutes() - postCreatedAt.getMinutes();
+  //   var seconds = currentTime.getSeconds() - postCreatedAt.getSeconds();
 
-    // Adjust for negative values
-    if (seconds < 0) {
-      minutes -= 1;
-      seconds += 60;
-    }
+  //   // Adjust for negative values
+  //   if (seconds < 0) {
+  //     minutes -= 1;
+  //     seconds += 60;
+  //   }
 
-    if (minutes < 0) {
-      hours -= 1;
-      minutes += 60;
-    }
-    if (hours < 0) {
-      days -= 1;
-      hours += 24;
-    }
+  //   if (minutes < 0) {
+  //     hours -= 1;
+  //     minutes += 60;
+  //   }
+  //   if (hours < 0) {
+  //     days -= 1;
+  //     hours += 24;
+  //   }
 
-    if (days > 0) {
-      return `${days} day${days > 1 ? 's' : ''} ago`;
-    } else if (hours > 0) {
-      return `${hours} hour${hours > 1 ? 's' : ''} ago`;
-    } else if (minutes > 0) {
-      return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
-    } else {
-      return 'Just a moment ago';
-    }
-  };
+  //   if (days > 0) {
+  //     return `${days} day${days > 1 ? 's' : ''} ago`;
+  //   } else if (hours > 0) {
+  //     return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+  //   } else if (minutes > 0) {
+  //     return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
+  //   } else {
+  //     return 'Just a moment ago';
+  //   }
+  // };
   const getMediaHtml = (media: IMedia) => {
     if (media.type === 'image') {
       return (
@@ -482,7 +490,16 @@ const Post = (post: IPost) => {
                         {post.user.first_name} {post.user.last_name}{' '}
                       </h2>
                       <p className="text-sm text-gray-700">
-                        {timeDifference()}
+                        {/* {timeDifference()} */}
+                        {
+                          <span className="text-sm text-gray-700">
+                            {postCreatedAt.toLocaleDateString('en-US', {
+                              year: 'numeric',
+                              month: 'long',
+                              day: 'numeric',
+                            })}
+                          </span>
+                        }
                       </p>
                     </Link>
                   </div>
@@ -507,7 +524,16 @@ const Post = (post: IPost) => {
                       </h2>
                     </Link>
                     <small className="text-sm text-gray-700">
-                      {timeDifference()}
+                      {/* {timeDifference()} */}
+                      {
+                        <span className="text-sm text-gray-700">
+                          {postCreatedAt.toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                          })}
+                        </span>
+                      }
                     </small>
                   </div>
                 </div>

@@ -1,22 +1,10 @@
 import { useEffect, useState } from 'react';
 import LeftSidebar from '../../components/LeftSidebar';
 import { IPet, IUser } from '../../../types';
-import Pet from '../../components/Pet';
 import { Link } from 'react-router-dom';
-import { checkJwt } from '../../../utils/auth';
 import { fetchPetsPair } from '../../api';
 const PairPetsPage = () => {
   const petId = window.location.pathname.split('/')[3];
-  const [currentUser, setCurrentUser] = useState<IUser | null>(null);
-
-  useEffect(() => {
-    async function fetchCurrentUser() {
-      const response: IUser | null = await checkJwt();
-      setCurrentUser(response);
-    }
-
-    fetchCurrentUser();
-  }, []);
   const [pet, setPet] = useState<IPet>();
   const [listFindPets, setListFindPets] = useState<any | null>(null);
 
@@ -69,7 +57,7 @@ const PairPetsPage = () => {
           <div className=" rounded overflow-hidden shadow-lg gird md:flex ">
             <div>
               <img
-                className="h-full hover:scale-105"
+                className="md:h-96 "
                 src={
                   pet?.avatar
                     ? pet?.avatar
@@ -111,7 +99,7 @@ const PairPetsPage = () => {
                   <div className="w-full px-3 mb-6 border rounded overflow-hidden shadow-lg  ">
                     <div className="max-w-sm">
                       <img
-                        className="h-full hover:scale-105"
+                        className="h-full mx-auto hover:scale-105"
                         src={
                           pet.avatar
                             ? pet.avatar

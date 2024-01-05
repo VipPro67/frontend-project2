@@ -371,6 +371,7 @@ const MessagerPage = () => {
                       type="text"
                       placeholder="Type a message..."
                       id="message"
+                      onKeyDown={(e) => e.key == 'Enter' && handleSend()}
                     />
                   </div>
                   <button title="Send">

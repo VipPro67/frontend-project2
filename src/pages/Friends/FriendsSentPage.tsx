@@ -42,6 +42,7 @@ const FriendsSentPage = () => {
       .then((res) => {
         if (res.status == 200) {
           alert('Send cancel request successfully');
+          window.location.reload();
         }
       });
   };

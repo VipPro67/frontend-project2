@@ -42,6 +42,7 @@ const FriendsRequestPage = () => {
       .then((res) => {
         if (res.status == 200) {
           alert('Accept friend request successfully');
+          window.location.reload();
         }
       });
   };
@@ -56,6 +57,7 @@ const FriendsRequestPage = () => {
       .then((res) => {
         if (res.status == 200) {
           alert('Send decline request successfully');
+          window.location.reload();
         }
       });
   };

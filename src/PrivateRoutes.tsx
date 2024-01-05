@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, Navigate } from 'react-router-dom';
 import HomePage from './pages/Home';
 import FriendsPage from './pages/Friends';
 import PetsPage from './pages/Pets';
@@ -19,27 +19,39 @@ import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
 
 export const PrivateRoutes = () => {
+  const isAuth = localStorage.getItem('access_token');
   return (
     <Routes>
-      <Route path="sign-in" element={<SignIn />} />
-      <Route path="sign-up" element={<SignUp />} />
-      <Route path="/" element={<HomePage />} />
-      <Route path="/friends" element={<FriendsPage />} />
-      <Route path="/friends/friends-request" element={<FriendsRequestPage />} />
-      <Route path="/friends/friends-sent" element={<FriendsSentPage />} />
-      <Route path="/friends/search" element={<SearchFriendsPage />} />
-      <Route path="/pets/my-pets" element={<MyPetsPage />} />
-      <Route path="/pets" element={<PetsPage />} />
-      <Route path="/pets/pair/:id" element={<PairPetsPage />} />
-      <Route path="/groups" element={<MyGroupsPage />} />
-      <Route path="/groups/:id" element={<GroupsProfilePage />} />
-      <Route path="/groups/search" element={<GroupsPage />} />
-      <Route path="/create-post" element={<CreatePostPage />} />
-      <Route path="/profile/:id" element={<ProfilePage />} />
-      <Route path="/new-feed" element={<NewFeedPage />} />
-      <Route path="/messager" element={<MessagerPage />} />
-      <Route path="*" element={<NotFound />} />
+      {isAuth ? (
+        <Route>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/friends" element={<FriendsPage />} />
+          <Route
+            path="/friends/friends-request"
+            element={<FriendsRequestPage />}
+          />
+          <Route path="/friends/friends-sent" element={<FriendsSentPage />} />
+          <Route path="/friends/search" element={<SearchFriendsPage />} />
+          <Route path="/pets/my-pets" element={<MyPetsPage />} />
+          <Route path="/pets" element={<PetsPage />} />
+          <Route path="/pets/pair/:id" element={<PairPetsPage />} />
+          <Route path="/groups" element={<MyGroupsPage />} />
+          <Route path="/groups/:id" element={<GroupsProfilePage />} />
+          <Route path="/groups/search" element={<GroupsPage />} />
+          <Route path="/create-post" element={<CreatePostPage />} />
+          <Route path="/profile/:id" element={<ProfilePage />} />
+          <Route path="/new-feed" element={<NewFeedPage />} />
+          <Route path="/messager" element={<MessagerPage />} />
+          <Route path="*" element={<NotFound />} />
+        </Route>
+      ) : (
+        <Route>
+          <Route path="sign-in" element={<SignIn />} />
+          <Route path="sign-up" element={<SignUp />} />
+          <Route path="/" element={<HomePage />} />
+          <Route path="*" element={<NotFound />} />
+        </Route>
+      )}
     </Routes>
   );
 };
-

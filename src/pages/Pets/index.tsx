@@ -37,18 +37,18 @@ const PetsPage = () => {
       <div className="mx-3 mb-6 gap-1 grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2">
         {listFindPets
           ? listFindPets.map((pet: IPet) => (
-              <div className="w-full px-3 mb-6 border rounded overflow-hidden shadow-lg ">
-                <div className="max-w-sm">
-                  <img
-                    className="h-full hover:scale-105"
-                    src={
-                      pet.avatar
-                        ? pet.avatar
-                        : './assets/images/default-avatar.png'
-                    }
-                    alt="Buddy's Avatar"
-                  ></img>
-                  <div className="p-4">
+              <div className="w-full px-3 mb-6 border rounded overflow-hidden shadow-lg grid grid-rows-2">
+                <img
+                  className="h-full hover:scale-105"
+                  src={
+                    pet.avatar
+                      ? pet.avatar
+                      : './assets/images/default-avatar.png'
+                  }
+                  alt={pet.name}
+                ></img>
+                <div className="max-w-sm row-span-1 ">
+                  <div className="p-4 row-span-1">
                     <div className="flex justify-between">
                       <div className="font-bold text-xl mb-2">{pet.name}</div>
                     </div>
@@ -68,24 +68,24 @@ const PetsPage = () => {
                     <p className="text-gray-700 text-base">
                       <strong>Description:</strong> {pet.description}
                     </p>
-                  </div>
-                </div>{' '}
-                <div className="grid p-2">
-                  <b>Owner:</b>
-                  <div className="flex justify-start pl-5 items-center">
-                    <Link to={`/profile/${pet.owner.id}`}>
-                      <img
-                        className="w-10 h-10 rounded-full"
-                        src={pet.owner.avatar ? pet.owner.avatar : ''}
-                        alt=""
-                      />
-                    </Link>
-                    <div className="ml-2">
-                      <p className="text-sm font-medium text-gray-900">
-                        {pet.owner.first_name} {pet.owner.last_name}
-                      </p>
+                  </div>{' '}
+                  <div className="grid p-2">
+                    <b>Owner:</b>
+                    <div className="flex justify-start pl-5 items-center">
+                      <Link to={`/profile/${pet.owner.id}`}>
+                        <img
+                          className="w-10 h-10 rounded-full"
+                          src={pet.owner.avatar ? pet.owner.avatar : ''}
+                          alt=""
+                        />
+                      </Link>
+                      <div className="ml-2">
+                        <p className="text-sm font-medium text-gray-900">
+                          {pet.owner.first_name} {pet.owner.last_name}
+                        </p>
+                      </div>
                     </div>
-                  </div>
+                  </div>{' '}
                 </div>{' '}
               </div>
             ))

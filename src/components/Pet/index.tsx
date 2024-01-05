@@ -7,6 +7,7 @@ const Pet = (pet: IPet) => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedMedia, setSelectedMedia] = useState<File | null>(null);
   const [currentUser, setUser] = useState<IUser | null>(null);
+
   useEffect(() => {
     const fetchUser = async () => {
       const userData = await checkJwt();
@@ -279,14 +280,14 @@ const Pet = (pet: IPet) => {
 
   return (
     <div className="max-w-sm border rounded overflow-hidden shadow-lg grid grid-rows-2">
-      <div>
+      <div className="w-full row-span-1">
         <img
-          className="h-full hover:scale-105"
+          className="h-full hover:scale-105 w-full lazyload"
           src={pet.avatar ? pet.avatar : './assets/images/default-avatar.png'}
-          alt="Buddy's Avatar"
+          alt="{pet.name}"
         ></img>
       </div>
-      <div className="p-4">
+      <div className="p-4 row-span-1">
         <div className="flex items-center justify-between">
           <div className="flex ">
             <div className="font-bold text-xl mb-2">{pet.name}</div>

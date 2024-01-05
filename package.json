@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
+    "@kommunicate/kommunicate-chatbot-plugin": "^0.0.7",
     "@preact/signals": "^1.2.2",
     "axios": "^1.6.2",
     "jotai": "^2.5.0",
