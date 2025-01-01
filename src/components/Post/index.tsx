@@ -5,10 +5,13 @@ import { fetchCommentsByPostId } from '../../api';
 import { Link } from 'react-router-dom';
 import { checkJwt } from '../../../utils/auth';
 import axios from 'axios';
-
 const ListComment = (post: IPost) => {
   const [listComment, setListComment] = useState<IComment[] | null>(null);
   const [newComment, setNewComment] = useState<string>('');
+  const [commentImage, setCommentImage] = useState<File | null>(null);
+  const [replied_comment_id, setRepliedCommentId] = useState<number | null>(
+    null
+  );
   const accessToken = localStorage.getItem('access_token');
   if (!accessToken) {
     window.location.href = '/sign-in';
@@ -25,20 +28,27 @@ const ListComment = (post: IPost) => {
 
   const submitComment = async () => {
     try {
-      if (newComment === '') {
-        alert('Please enter your comment');
+      if (newComment === '' && !commentImage) {
+        alert('Please enter your comment or select an image');
         return;
       }
-      // You need to implement the endpoint and handle the response accordingly
+
+      const formData = new FormData();
+      formData.append('post_id', post.id);
+      formData.append('comment', newComment);
+      if (replied_comment_id) {
+        formData.append('replied_comment_id', replied_comment_id.toString());
+      }
+      if (commentImage) {
+        formData.append('file', commentImage);
+      }
+
       const response = await axios.post(
         'http://localhost:3001/api/v1/comments',
-        {
-          post_id: post.id,
-          comment: newComment,
-        },
+        formData,
         {
           headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'multipart/form-data',
             Authorization: `Bearer ${localStorage.getItem('access_token')}`,
           },
         }
@@ -51,13 +61,16 @@ const ListComment = (post: IPost) => {
       const updatedComments = await fetchCommentsByPostId(post.id);
       setListComment(updatedComments);
 
-      // Clear the input field after submitting
+      // Clear the input fields after submitting
       setNewComment('');
+      setCommentImage(null);
+      setRepliedCommentId(null);
     } catch (error) {
       // Handle any errors here
       console.error('Error submitting comment:', error);
     }
   };
+
   return (
     <section className="bg-white py-8 lg:py-16 antialiased">
       <div className="max-w-2xl mx-auto px-4">
@@ -73,7 +86,7 @@ const ListComment = (post: IPost) => {
             submitComment();
           }}
         >
-          <div className="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg border border-gray-200 ">
+          <div className="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg border border-gray-200">
             <label htmlFor="comment" className="sr-only">
               Your comment
             </label>
@@ -82,26 +95,60 @@ const ListComment = (post: IPost) => {
               rows={2}
               className="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none"
               placeholder="Write a comment..."
-              required
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
             ></textarea>
           </div>
-          <button
-            type="submit"
-            className="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center dark:text-white bg-blue-400 dark:bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800"
-          >
-            Post comment
-          </button>
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center">
+              <label htmlFor="comment-image" className="cursor-pointer">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6 text-gray-500 hover:text-gray-700"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  />
+                </svg>
+              </label>
+              <input
+                type="file"
+                id="comment-image"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => setCommentImage(e.target.files?.[0] || null)}
+              />
+              {commentImage && (
+                <div className="ml-2">
+                  <img
+                    className="object-cover h-12 w-12 rounded-lg"
+                    src={URL.createObjectURL(commentImage)}
+                    alt="comment-image"
+                  />
+                </div>
+              )}
+            </div>
+            <button
+              type="submit"
+              className="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-blue-500 rounded-lg focus:ring-4 focus:ring-blue-200 hover:bg-blue-600"
+            >
+              Post comment
+            </button>
+          </div>
         </form>
-        {listComment?.map((commnet: IComment) => (
-          <Comment key={commnet.id} {...commnet} />
+        {listComment?.map((comment: IComment) => (
+          <Comment key={comment.id} {...comment} />
         ))}
       </div>
     </section>
   );
 };
-
 const Post = (post: IPost) => {
   const [showComments, setShowComments] = useState(false);
   const [isOnwer, setIsOnwer] = useState(false);
@@ -274,8 +321,7 @@ const Post = (post: IPost) => {
   };
   const deletePost = async (id: string) => {
     try {
-      confirm('Are you sure you want to delete this post?');
-      if (!confirm) return;
+      if (!confirm('Are you sure you want to delete this post?')) return;
       const res = await axios.delete(
         'http://localhost:3001/api/v1/posts/' + id,
         {
@@ -319,14 +365,24 @@ const Post = (post: IPost) => {
             <form className="xl:w-full xl:max-w-lg xl:p-4 m-2">
               <div className="flex justify-between mb-2">
                 <h1 className="text-2xl font-bold text-gray-900">Edit Post</h1>
-                <button className="bg-red" onClick={() => deletePost(post.id)}>
-                  <img
-                    src="https://project2-media.s3.ap-southeast-1.amazonaws.com/assets/icons/delete.svg"
-                    height={24}
-                    width={24}
-                    title="Delete"
-                    alt="Delete"
-                  ></img>
+                <button
+                  className="text-red-500"
+                  onClick={() => deletePost(post.id)}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                    />
+                  </svg>
                 </button>
               </div>
               <div className="grid grid-flow-row">
@@ -540,23 +596,23 @@ const Post = (post: IPost) => {
               )}
             </div>
             <div className="flex items-center justify-between">
-              {isOnwer ? (
-                <div className="flex items-center justify-between">
-                  <button
-                    className="bg-red"
-                    onClick={() => setIsEditPost(true)}
+              {isOnwer && (
+                <button onClick={() => setIsEditPost(true)}>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-6 w-6 text-gray-500"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
                   >
-                    <img
-                      src="https://project2-media.s3.ap-southeast-1.amazonaws.com/assets/icons/edit.svg"
-                      height={24}
-                      width={24}
-                      title="Edit"
-                      alt="Edit"
-                    ></img>
-                  </button>
-                </div>
-              ) : (
-                ''
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                    />
+                  </svg>
+                </button>
               )}
             </div>
           </div>
@@ -570,34 +626,46 @@ const Post = (post: IPost) => {
             <div className="flex mr-2 text-gray-700 text-lg">
               <button className=" bg-red" onClick={likePost}>
                 {!liked ? (
-                  <img
-                    src="https://project2-media.s3.ap-southeast-1.amazonaws.com/assets/icons/like.svg"
-                    height={24}
-                    width={24}
-                    title="Like"
-                    alt="Like"
-                  ></img>
+                  <svg
+                    fill="#000000"
+                    className="w-8 h-8"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M3,21a1,1,0,0,1-1-1V12a1,1,0,0,1,1-1H6V21ZM19.949,10H14.178V5c0-2-3.076-2-3.076-2s0,4-1.026,5C9.52,8.543,8.669,10.348,8,11V21H18.644a2.036,2.036,0,0,0,2.017-1.642l1.3-7A2.015,2.015,0,0,0,19.949,10Z" />
+                  </svg>
                 ) : (
-                  <img
-                    src="https://project2-media.s3.ap-southeast-1.amazonaws.com/assets/icons/liked.svg"
-                    height={24}
-                    width={24}
-                    title="Like"
-                    alt="Like"
-                  ></img>
+                  <svg
+                    fill="#FF0000"
+                    className="w-8 h-8"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M3,21a1,1,0,0,1-1-1V12a1,1,0,0,1,1-1H6V21ZM19.949,10H14.178V5c0-2-3.076-2-3.076-2s0,4-1.026,5C9.52,8.543,8.669,10.348,8,11V21H18.644a2.036,2.036,0,0,0,2.017-1.642l1.3-7A2.015,2.015,0,0,0,19.949,10Z" />
+                  </svg>
                 )}
               </button>
               <span className={'ml-2 mr-8'}>{totalLike}</span>
             </div>
             <div className="flex mr-2 text-gray-700 text-md">
               <button onClick={() => setShowComments(!showComments)}>
-                <img
-                  src="https://project2-media.s3.ap-southeast-1.amazonaws.com/assets/icons/comment.svg"
-                  height={24}
-                  width={24}
-                  title="Comment"
-                  alt="Comment"
-                ></img>
+                <svg
+                  className="w-8 h-8"
+                  version="1.0"
+                  id="Layer_1"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 64 64"
+                  enable-background="new 0 0 64 64"
+                >
+                  <path
+                    fill="#231F20"
+                    d="M60,0H4C1.789,0,0,1.789,0,4v40c0,2.211,1.789,4,4,4h8v15c0,0.404,0.243,0.77,0.617,0.924
+	C12.741,63.976,12.871,64,13,64c0.26,0,0.516-0.102,0.707-0.293L29.414,48H60c2.211,0,4-1.789,4-4V4C64,1.789,62.211,0,60,0z M15,14
+	h16c0.553,0,1,0.447,1,1s-0.447,1-1,1H15c-0.553,0-1-0.447-1-1S14.447,14,15,14z M45,34H15c-0.553,0-1-0.447-1-1s0.447-1,1-1h30
+	c0.553,0,1,0.447,1,1S45.553,34,45,34z M14,27c0-0.553,0.447-1,1-1h24c0.553,0,1,0.447,1,1s-0.447,1-1,1H15
+	C14.447,28,14,27.553,14,27z M49,22H15c-0.553,0-1-0.447-1-1s0.447-1,1-1h34c0.553,0,1,0.447,1,1S49.553,22,49,22z"
+                  />
+                </svg>
               </button>
 
               <span className="ml-2 mr-8">{post.comments?.length ?? 0}</span>
