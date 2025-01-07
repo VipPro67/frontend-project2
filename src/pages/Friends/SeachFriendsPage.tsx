@@ -5,6 +5,7 @@ import { checkJwt } from '../../../utils/auth';
 import { IUser } from '../../../types';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+const API_URL = import.meta.env.VITE_API_URL;
 
 const SearchFriendsPage = () => {
   const [currentUser, setCurrentUser] = useState<IUser | null>(null);
@@ -29,7 +30,7 @@ const SearchFriendsPage = () => {
 
   const handleAddFriend = async (id: number) => {
     await axios
-      .get(`http://localhost:3001/api/v1/relationships/add-friend/${id}`, {
+      .get(`${API_URL}/api/v1/relationships/add-friend/${id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('access_token')}`,
         },

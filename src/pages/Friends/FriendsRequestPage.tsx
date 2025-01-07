@@ -5,6 +5,7 @@ import { checkJwt } from '../../../utils/auth';
 import { IUser } from '../../../types';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+const API_URL = import.meta.env.VITE_API_URL;
 
 const FriendsRequestPage = () => {
   const [listRelationships, setListRelationships] = useState<any | null>(null);
@@ -34,7 +35,7 @@ const FriendsRequestPage = () => {
 
   const handleAcceptFriend = async (id: number) => {
     await axios
-      .get(`http://localhost:3001/api/v1/relationships/accept-friend/${id}`, {
+      .get(`${API_URL}/api/v1/relationships/accept-friend/${id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('access_token')}`,
         },
@@ -49,7 +50,7 @@ const FriendsRequestPage = () => {
 
   const handleDeclineFriend = async (id: number) => {
     await axios
-      .get(`http://localhost:3001/api/v1/relationships/reject-friend/${id}`, {
+      .get(`${API_URL}/api/v1/relationships/reject-friend/${id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('access_token')}`,
         },

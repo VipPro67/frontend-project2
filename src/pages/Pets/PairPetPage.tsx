@@ -3,6 +3,9 @@ import LeftSidebar from '../../components/LeftSidebar';
 import { IPet, IUser } from '../../../types';
 import { Link } from 'react-router-dom';
 import { fetchPetsPair } from '../../api';
+
+const API_URL = import.meta.env.VITE_API_URL;
+
 const PairPetsPage = () => {
   const petId = window.location.pathname.split('/')[3];
   const [pet, setPet] = useState<IPet>();
@@ -11,7 +14,7 @@ const PairPetsPage = () => {
   const [view, setView] = useState('');
   useEffect(() => {
     const getPet = async () => {
-      const res = await fetch(`http://localhost:3001/api/v1/pets/${petId}`);
+      const res = await fetch(`${API_URL}/api/v1/pets/${petId}`);
       const data = await res.json();
       setPet(data);
     };

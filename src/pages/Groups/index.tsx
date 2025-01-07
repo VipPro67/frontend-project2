@@ -6,6 +6,7 @@ import { IGroup, IUser } from '../../../types';
 import { fetchGroupsSearch } from '../../api';
 import axios from 'axios';
 import { checkJwt } from '../../../utils/auth';
+const API_URL = import.meta.env.VITE_API_URL;
 
 type IResponse = {
   data: IGroup[];
@@ -41,7 +42,7 @@ const GroupsPage = () => {
     try {
       await axios
         .post(
-          `http://localhost:3001/api/v1/groups/${id}/join`,
+          `${API_URL}/api/v1/groups/${id}/join`,
           {},
           {
             headers: {
@@ -167,7 +168,7 @@ const GroupsPage = () => {
                   </label>
                   <button onClick={handleSearch}>
                     <svg
-                      className='w-6 h-6 transform-rotate-45 mb-2 mr-4 '
+                      className="w-6 h-6 transform-rotate-45 mb-2 mr-4 "
                       viewBox="0 0 24 24"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"

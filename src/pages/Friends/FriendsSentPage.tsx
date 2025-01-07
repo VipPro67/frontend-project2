@@ -34,7 +34,7 @@ const FriendsSentPage = () => {
 
   const handleCancelFriend = async (id: number) => {
     await axios
-      .get(`http://localhost:3001/api/v1/relationships/cancel-friend/${id}`, {
+      .get(`${API_URL}/api/v1/relationships/cancel-friend/${id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('access_token')}`,
         },

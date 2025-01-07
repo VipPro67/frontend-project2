@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { checkJwt } from '../../../utils/auth';
+const API_URL = import.meta.env.VITE_API_URL;
 
 const SignUp = () => {
   const [email, setEmail] = useState('');
@@ -42,7 +43,7 @@ const SignUp = () => {
 
     await axios
       .post(
-        'http://localhost:3001/auth/register',
+        `${API_URL}/auth/register`,
         {
           email,
           password,

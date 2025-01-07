@@ -34,7 +34,7 @@ const FriendsPage = () => {
 
   const handleUnfriend = async (id: number) => {
     await axios
-      .get(`http://localhost:3001/api/v1/relationships/unfriend/${id}`, {
+      .get(`${API_URL}/api/v1/relationships/unfriend/${id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('access_token')}`,
         },

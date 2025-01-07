@@ -4,13 +4,14 @@ import { IUser } from '../types';
 const getJwtToken = () => localStorage.getItem('access_token');
 
 let cachedUser: IUser | null = null;
+const API_URL = import.meta.env.VITE_API_URL;
 
 export const checkJwt = async () => {
   // Check if user information is already cached
   if (cachedUser) {
     return cachedUser;
   }
-  
+
   const token = getJwtToken();
 
   if (token) {
@@ -28,7 +29,7 @@ export const checkJwt = async () => {
       //When the token is valid get new token using refresh token if it is expired
       if (decodedToken.exp < currentTimestamp + 300) {
         try {
-          const response = await axios.post('http://localhost:3001/auth/refresh-token', {
+          const response = await axios.post(`${API_URL}/auth/refresh-token`, {
             refreshToken: localStorage.getItem('refresh_token'),
           });
           const data = response.data;
@@ -42,7 +43,7 @@ export const checkJwt = async () => {
       }
 
       // Token is valid, fetch user data using Axios
-      const response = await axios.get('http://localhost:3001/api/v1/users/my-profile', {
+      const response = await axios.get(`${API_URL}/api/v1/users/my-profile`, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,

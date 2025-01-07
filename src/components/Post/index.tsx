@@ -5,6 +5,8 @@ import { fetchCommentsByPostId } from '../../api';
 import { Link } from 'react-router-dom';
 import { checkJwt } from '../../../utils/auth';
 import axios from 'axios';
+const API_URL = import.meta.env.VITE_API_URL;
+
 const ListComment = (post: IPost) => {
   const [listComment, setListComment] = useState<IComment[] | null>(null);
   const [newComment, setNewComment] = useState<string>('');
@@ -44,7 +46,7 @@ const ListComment = (post: IPost) => {
       }
 
       const response = await axios.post(
-        'http://localhost:3001/api/v1/comments',
+        `${API_URL}/api/v1/comments`,
         formData,
         {
           headers: {
@@ -243,7 +245,7 @@ const Post = (post: IPost) => {
     try {
       // You need to implement the endpoint and handle the response accordingly
       await axios.post(
-        `http://localhost:3001/api/v1/posts/${post.id}/like`,
+        `${API_URL}/api/v1/posts/${post.id}/like`,
         {
           post_id: post.id,
         },
@@ -305,7 +307,7 @@ const Post = (post: IPost) => {
     });
     try {
       const res = axios
-        .put('http://localhost:3001/api/v1/posts/' + post.id, formData, {
+        .put(`${API_URL}/api/v1/posts/` + post.id, formData, {
           headers: {
             'Content-Type': 'form-data',
             Authorization: `Bearer ${localStorage.getItem('access_token')}`,
@@ -322,14 +324,11 @@ const Post = (post: IPost) => {
   const deletePost = async (id: string) => {
     try {
       if (!confirm('Are you sure you want to delete this post?')) return;
-      const res = await axios.delete(
-        'http://localhost:3001/api/v1/posts/' + id,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-          },
-        }
-      );
+      const res = await axios.delete(`${API_URL}/api/v1/posts/` + id, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+        },
+      });
       res.status === 200 && alert('Post deleted successfully');
       window.location.href = '/';
     } catch (error) {

@@ -2,6 +2,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { IUser } from '../../../types';
 import { checkJwt } from '../../../utils/auth';
+const API_URL = import.meta.env.VITE_API_URL;
 
 const SignIn = () => {
   const [email, setEmail] = useState('');
@@ -29,7 +30,7 @@ const SignIn = () => {
 
     const response = await axios
       .post(
-        'http://localhost:3001/auth/login',
+        `${API_URL}/auth/login`,
         {
           email,
           password,

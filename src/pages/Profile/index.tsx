@@ -11,6 +11,7 @@ import { checkJwt } from '../../../utils/auth';
 import Pet from '../../components/Pet';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+const API_URL = import.meta.env.VITE_API_URL;
 
 const ProfilePage = () => {
   const userId = window.location.pathname.split('/')[2];
@@ -72,7 +73,7 @@ const ProfilePage = () => {
     const formData = new FormData();
     formData.append('avatar', selectedMedia || '');
     if (selectedMedia) {
-      axios.post('http://localhost:3001/api/v1/users/upload-avatar', formData, {
+      axios.post(`${API_URL}/api/v1/users/upload-avatar`, formData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('access_token')}`,
         },
@@ -80,7 +81,7 @@ const ProfilePage = () => {
     }
     axios
       .put(
-        `http://localhost:3001/api/v1/users/${userId}`,
+        `${API_URL}/api/v1/users/${userId}`,
         {
           first_name: createFirstName || user?.first_name,
           last_name: createLastName || user?.last_name,
@@ -113,7 +114,7 @@ const ProfilePage = () => {
     }
     axios
       .put(
-        `http://localhost:3001/api/v1/users/${userId}`,
+        `${API_URL}/api/v1/users/${userId}`,
         {
           password: newPassword.value,
         },

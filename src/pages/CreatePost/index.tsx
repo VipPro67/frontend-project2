@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { IUser } from '../../../types';
 import { checkJwt } from '../../../utils/auth';
+const API_URL = import.meta.env.VITE_API_URL;
 
 const CreatePost = () => {
   const [postData, setPostData] = useState({
@@ -36,7 +37,7 @@ const CreatePost = () => {
     });
     try {
       const res = axios
-        .post('http://localhost:3001/api/v1/posts', formData, {
+        .post(`${API_URL}/api/v1/posts`, formData, {
           headers: {
             'Content-Type': 'form-data',
             Authorization: `Bearer ${localStorage.getItem('access_token')}`,
@@ -164,7 +165,6 @@ const CreatePost = () => {
 };
 
 const CreatePostPage = () => {
-
   return (
     <div className="xl:grid xl:grid-cols-12">
       <LeftSidebar />

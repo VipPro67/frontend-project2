@@ -21,6 +21,7 @@ type IResponse = {
   nextPage: number | null;
   prePage: number | null;
 };
+const API_URL = import.meta.env.VITE_API_URL;
 
 const MyGroupsPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -81,7 +82,7 @@ const MyGroupsPage = () => {
     }
 
     axios
-      .post('http://localhost:3001/api/v1/groups', formData, {
+      .post(`${API_URL}/api/v1/groups`, formData, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
           'Content-Type': 'multipart/form-data',

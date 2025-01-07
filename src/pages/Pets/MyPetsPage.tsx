@@ -6,6 +6,8 @@ import { IPet, IUser } from '../../../types';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { checkJwt } from '../../../utils/auth';
+const API_URL = import.meta.env.VITE_API_URL;
+
 const MyPetsPage = () => {
   const [currentUser, setCurrentUser] = useState<IUser | null>(null);
 
@@ -53,7 +55,7 @@ const MyPetsPage = () => {
       formDataP.append('avatar', selectedMedia);
     }
     axios
-      .post('http://localhost:3001/api/v1/pets', formDataP, {
+      .post(`${API_URL}/api/v1/pets`, formDataP, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('access_token')}`,
         },
@@ -66,10 +68,6 @@ const MyPetsPage = () => {
       .catch((err) => {
         console.log(err);
       });
-    try {
-    } catch (error) {
-      console.log(error);
-    }
   };
 
   const addNewPet = () => {

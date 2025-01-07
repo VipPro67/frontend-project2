@@ -5,6 +5,7 @@ import { fetchAllMyConservation } from '../../api';
 import { IMessage } from '../../../types';
 import io from 'socket.io-client';
 import axios from 'axios';
+const API_URL = import.meta.env.VITE_API_URL;
 
 const MessagerPage = () => {
   const [listConversation, setListConversation] = useState<IMessage[]>();
@@ -25,7 +26,7 @@ const MessagerPage = () => {
         const id = search.split('=')[1];
 
         const response = await fetch(
-          `http://localhost:3001/api/v1/messages/conversation/${type}/${id}`,
+          `${API_URL}/api/v1/messages/conversation/${type}/${id}`,
           {
             method: 'GET',
             headers: {
@@ -44,7 +45,7 @@ const MessagerPage = () => {
     fetchData();
 
     // Socket event handler
-    socket.current = io('http://localhost:3001');
+    socket.current = io(`${API_URL}`);
     socket.current.on('newMessage', (data: IMessage) => {
       // Update the conversation list with the new message
       setNewMessage(data);
@@ -63,7 +64,7 @@ const MessagerPage = () => {
     };
     const fetchGroup = async () => {
       const response = await axios.get(
-        `http://localhost:3001/api/v1/groups/${search.split('=')[1]}`,
+        `${API_URL}/api/v1/groups/${search.split('=')[1]}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -75,7 +76,7 @@ const MessagerPage = () => {
     };
     const fetchFriend = async () => {
       const response = await axios.get(
-        `http://localhost:3001/api/v1/users/${search.split('=')[1]}`,
+        `${API_URL}/api/v1/users/${search.split('=')[1]}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -101,16 +102,13 @@ const MessagerPage = () => {
       const type = search.split('=')[0].replace('?', '');
       const id = search.split('=')[1];
 
-      await fetch(
-        `http://localhost:3001/api/v1/messages/conversation/${type}/${id}`,
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-          },
-        }
-      )
+      await fetch(`${API_URL}/api/v1/messages/conversation/${type}/${id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+        },
+      })
         .then((res) => res.json())
         .then((data) => {
           setCurrentConversation(data);
@@ -376,7 +374,7 @@ const MessagerPage = () => {
                   </div>
                   <button title="Send" onClick={() => handleSend()}>
                     <svg
-                      className='h-6 w-6'
+                      className="h-6 w-6"
                       viewBox="0 0 24 24"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"

@@ -6,6 +6,7 @@ import { fetchGroupsById, fetchPostsByGroupId } from '../../api';
 import Post from '../../components/Post';
 import { checkJwt } from '../../../utils/auth';
 import axios from 'axios';
+const API_URL = import.meta.env.VITE_API_URL;
 
 const GroupsProfilePage = () => {
   const [listPost, setListPost] = useState<any | null>(null);
@@ -58,7 +59,7 @@ const GroupsProfilePage = () => {
     });
     try {
       const res = axios
-        .post('http://localhost:3001/api/v1/posts', formData, {
+        .post(`${API_URL}/api/v1/posts`, formData, {
           headers: {
             'Content-Type': 'form-data',
             Authorization: `Bearer ${accessToken}`,
@@ -77,7 +78,7 @@ const GroupsProfilePage = () => {
     try {
       const res = axios
         .post(
-          `http://localhost:3001/api/v1/groups/${group?.id}/join`,
+          `${API_URL}/api/v1/groups/${group?.id}/join`,
           {},
           {
             headers: {
@@ -102,7 +103,7 @@ const GroupsProfilePage = () => {
     try {
       const res = axios
         .post(
-          `http://localhost:3001/api/v1/groups/${group?.id}/leave`,
+          `${API_URL}/api/v1/groups/${group?.id}/leave`,
           {},
           {
             headers: {
