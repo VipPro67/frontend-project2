@@ -37,6 +37,9 @@ const SearchFriendsPage = () => {
       })
       .then((res) => {
         if (res.status == 200) {
+          setSearchResult(
+            searchResult.filter((item: any) => item.id !== id)
+          );
           alert('Send friend request successfully');
         }
       })
