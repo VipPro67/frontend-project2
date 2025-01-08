@@ -37,9 +37,7 @@ const SearchFriendsPage = () => {
       })
       .then((res) => {
         if (res.status == 200) {
-          setSearchResult(
-            searchResult.filter((item: any) => item.id !== id)
-          );
+          setSearchResult(searchResult.filter((item: any) => item.id !== id));
           alert('Send friend request successfully');
         }
       })
@@ -63,12 +61,13 @@ const SearchFriendsPage = () => {
                   src={user.avatar}
                   alt=""
                 />
+
+                <div className="ml-2">
+                  <p className="text-sm font-medium text-gray-900">
+                    {user.first_name} {user.last_name}
+                  </p>
+                </div>
               </Link>
-              <div className="ml-2">
-                <p className="text-sm font-medium text-gray-900">
-                  {user.first_name} {user.last_name}
-                </p>
-              </div>
             </div>
             <div className="flex items-center">
               <button

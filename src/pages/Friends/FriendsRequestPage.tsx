@@ -74,16 +74,19 @@ const FriendsRequestPage = () => {
           return (
             <div className="flex justify-between border rounded m-2 p-2 max ">
               <div className="flex items-center">
-                <img
-                  className="w-20 h-20 rounded-full"
-                  src={relationship.user.avatar}
-                  alt=""
-                />
-                <div className="ml-2">
-                  <p className="text-sm font-medium text-gray-900">
-                    {relationship.user.first_name} {relationship.user.last_name}
-                  </p>
-                </div>
+                <Link to={`/profile/${relationship.user.id}`}>
+                  <img
+                    className="w-20 h-20 rounded-full"
+                    src={relationship.user.avatar}
+                    alt=""
+                  />
+                  <div className="ml-2">
+                    <p className="text-sm font-medium text-gray-900">
+                      {relationship.user.first_name}{' '}
+                      {relationship.user.last_name}
+                    </p>
+                  </div>
+                </Link>
               </div>
               <div className="flex items-center">
                 <button

@@ -6,63 +6,63 @@ const API_URL = import.meta.env.VITE_API_URL;
 const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
   useEffect(() => {
-    async function checkHadUser() {
-      if (await checkJwt()) window.location.href = '/';
+    async function checkUserAndRefreshToken() {
+      const refreshToken = localStorage.getItem('refresh_token');
+      if (refreshToken) {
+        try {
+          const response = await axios.post(`${API_URL}/auth/refresh-token`, {
+            refresh_token: refreshToken,
+          });
+          const { access_token } = response.data;
+          localStorage.setItem('access_token', access_token);
+          window.location.href = '/';
+        } catch (error) {
+          console.error('Failed to refresh token:', error);
+          localStorage.removeItem('refresh_token');
+          localStorage.removeItem('access_token');
+        }
+      } else if (await checkJwt()) {
+        window.location.href = '/';
+      }
     }
 
-    checkHadUser();
+    checkUserAndRefreshToken();
   }, []);
 
   const handleSignIn = async () => {
-    // Check if email and password are not empty
     if (!email || !password) {
       const textHelper = document.getElementById('texthelper');
       textHelper?.classList.remove('hidden');
-      // Show error message in text helper
-
       textHelper
         ? (textHelper.innerText = 'Email or password must not be empty')
         : null;
       return;
     }
 
-    await axios
-      .post(
+    try {
+      const response = await axios.post(
         `${API_URL}/auth/login`,
-        {
-          email,
-          password,
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      )
-      .then((response) => {
-        if (response.status === 201) {
-          const { access_token, refresh_token } = response.data;
+        { email, password },
+        { headers: { 'Content-Type': 'application/json' } }
+      );
 
-          // Handle successful sign-up, e.g., store tokens in state or local storage
-          console.log('Sign-in successful');
-
-          // Save access token and refresh token into local storage
-          localStorage.setItem('access_token', access_token);
-          localStorage.setItem('refresh_token', refresh_token);
-          window.location.href = '/';
-
-          // Additional actions like redirect or updating user state can be done here
-        }
-      })
-      .catch((error) => {
-        console.error('Error during sign-in:', error);
-        const textHelper = document.getElementById('texthelper');
-        textHelper?.classList.remove('hidden');
-        textHelper
-          ? (textHelper.innerText = error.response.data.message)
-          : null;
-      });
+      if (response.status === 201) {
+        const { access_token, refresh_token } = response.data;
+        console.log('Sign-in successful');
+        localStorage.setItem('access_token', access_token);
+        localStorage.setItem('refresh_token', refresh_token);
+        window.location.href = '/';
+      }
+    } catch (error:any) {
+      console.error('Error during sign-in:', error);
+      const textHelper = document.getElementById('texthelper');
+      textHelper?.classList.remove('hidden');
+      textHelper
+        ? (textHelper.innerText = error.response?.data?.message || 'Sign-in failed')
+        : null;
+    }
   };
 
   return (

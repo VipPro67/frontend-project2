@@ -145,6 +145,7 @@ const LeftSidebar = () => {
               onClick={() => {
                 if (confirm('Are you sure you want to logout?')) {
                   localStorage.removeItem('access_token');
+                  localStorage.removeItem('refresh_token');
                   document.cookie = 'user=; path=/; max-age=0';
                   window.location.href = '/';
                 }

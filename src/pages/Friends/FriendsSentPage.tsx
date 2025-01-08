@@ -61,17 +61,19 @@ const FriendsSentPage = () => {
           return (
             <div className="flex justify-between border rounded m-2 p-2 max ">
               <div className="flex items-center">
-                <img
-                  className="w-20 h-20 rounded-full"
-                  src={relationship.friend.avatar}
-                  alt=""
-                />
-                <div className="ml-2">
-                  <p className="text-sm font-medium text-gray-900">
-                    {relationship.friend.first_name}{' '}
-                    {relationship.friend.last_name}
-                  </p>
-                </div>
+                <Link to={`/profile/${relationship.friend.id}`}>
+                  <img
+                    className="w-20 h-20 rounded-full"
+                    src={relationship.friend.avatar}
+                    alt=""
+                  />
+                  <div className="ml-2">
+                    <p className="text-sm font-medium text-gray-900">
+                      {relationship.friend.first_name}{' '}
+                      {relationship.friend.last_name}
+                    </p>
+                  </div>
+                </Link>
               </div>
               <div className="flex items-center">
                 <button
