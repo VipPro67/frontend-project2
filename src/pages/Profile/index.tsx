@@ -22,7 +22,7 @@ const ProfilePage = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showEditPasswordModal, setShowEditPasswordModal] = useState(false);
   const [view, setView] = useState('post');
-  const [currentUser, setCurrentUser] = useState<IUser | null>(null);
+  const [ , setCurrentUser] = useState<IUser | null>(null);
   const [selectedMedia, setSelectedMedia] = useState<File | null>(null);
   const [createFirstName, setCreateFirstName] = useState<string | null>(null);
   const [createLastName, setCreateLastName] = useState<string | null>(null);
