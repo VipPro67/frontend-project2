@@ -1,4 +1,4 @@
-http://20.108.26.12:5173/
+Demo at: https://frontend-project2-nu.vercel.app
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
