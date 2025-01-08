@@ -1,8 +1,6 @@
-import LeftSidebar from '../../components/LeftSidebar';
-import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { IUser } from '../../../types';
-import { checkJwt } from '../../../utils/auth';
+import LeftSidebar from '../../components/LeftSidebar';
+import { useState } from 'react';
 const API_URL = import.meta.env.VITE_API_URL;
 
 const CreatePost = () => {
@@ -18,7 +16,7 @@ const CreatePost = () => {
     const tag = document.getElementById('tags') as HTMLInputElement;
     if (tag.value) {
       if (postData.tagNames.includes(tag.value)) {
-        alert('Tag already exist');
+        alert('Tag already exists');
         return;
       }
       setPostData({ ...postData, tagNames: [...postData.tagNames, tag.value] });
@@ -36,7 +34,7 @@ const CreatePost = () => {
       formData.append(`tagNames[${index}]`, tag);
     });
     try {
-      const res = axios
+      axios
         .post(`${API_URL}/api/v1/posts`, formData, {
           headers: {
             'Content-Type': 'form-data',
@@ -53,111 +51,128 @@ const CreatePost = () => {
   };
 
   return (
-    <div className="xl:col-span-10 xl:p-2 xl:rounded-xl bg-white xl:m-2 h-{full-2rem}">
-      <div className="grid grid-flow-row justify-center items-center">
-        <h1 className="text-2xl font-bold">Create Post</h1>
-        <div className="lg:w-1/2 mx-auto">
-          <form className="grid grid-flow-row mx-2">
-            <div className="grid grid-flow-row">
-              <label htmlFor="title">Title</label>
-              <input
-                type="text"
-                id="title"
-                className="border border-gray-400 rounded-md p-2"
-                value={postData.title}
-                onChange={(e) =>
-                  setPostData({ ...postData, title: e.target.value })
-                }
-              />
-            </div>
-            <div className="grid grid-flow-row">
-              <label htmlFor="content">Content</label>
-              <textarea
-                id="content"
-                className="border border-gray-400 rounded-md p-2"
-                value={postData.description}
-                onChange={(e) =>
-                  setPostData({ ...postData, description: e.target.value })
-                }
-              />
-            </div>
-            <div className="grid grid-flow-row">
-              <label htmlFor="tags">
-                <span className=" ml-2 text-sm text-gray-800 sm:text-base ">
-                  Tag
-                </span>{' '}
-              </label>
-              <div className="md:grid md:grid-cols-12 items-center ">
-                <input
-                  id="tags"
-                  className="mt-1 py-3 px-5 border-2 rounded-md outline-none w-full md:col-span-10 gap-2 "
-                  type="text"
-                  placeholder="Type something"
-                />
-                <div
-                  className="text-center py-3 px-7  h-fit w-fit text-sm font-medium bg-purple-500 text-gray-100 rounded-md cursor-pointer sm:w-min hover:bg-purple-700 hover:text-gray-50  mb-4 sm:mb-0"
-                  onClick={() => {
-                    handleAddTag();
-                  }}
-                >
-                  <span>Add</span>
-                </div>
-              </div>
-              <div className="flex flex-wrap">
-                {postData.tagNames.map((tag) => (
-                  <div
-                    key={tag}
-                    className="bg-gray-200 text-gray-700 text-sm font-semibold rounded-full py-1 px-2 m-1 flex items-center"
-                  >
-                    {tag}
-                    <button title="Delete post">
-                      <svg
-                        className="w-3 h-3 ml-2 cursor-pointer"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                        onClick={() => {
-                          setPostData({
-                            ...postData,
-                            tagNames: postData.tagNames.filter(
-                              (t) => t !== tag
-                            ),
-                          });
-                        }}
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M6 18L18 6M6 6l12 12"
-                        ></path>
-                      </svg>
-                    </button>
-                  </div>
-                ))}
-                <div className="flex flex-wrap"></div>
-              </div>
-            </div>
-            <div className="grid grid-flow-row">
-              <label htmlFor="image">Media</label>
-              <input
-                type="file"
-                id="image"
-                accept=".jpg,.png,.jpeg,.mp4,.avi,.mkv,video/*"
-                className="border border-gray-400 rounded-md p-2"
-                onChange={(e) => setSelectedMedia(e.target.files?.[0] || null)}
-              />
-            </div>
-          </form>
-          <div className="flex justify-end">
-            <button
-              className="bg-blue-500 text-white rounded-md p-2 mt-2"
-              onClick={handleSubmit}
+    <div className="xl:col-span-10 xl:p-6 xl:rounded-xl bg-white xl:m-2 shadow-lg">
+      <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">
+        Create Post
+      </h1>
+      <div className="max-w-2xl mx-auto">
+        <form className="space-y-6">
+          <div>
+            <label
+              htmlFor="title"
+              className="block text-sm font-medium text-gray-700 mb-1"
             >
-              Create Post
-            </button>
+              Title
+            </label>
+            <input
+              type="text"
+              id="title"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              value={postData.title}
+              onChange={(e) =>
+                setPostData({ ...postData, title: e.target.value })
+              }
+            />
           </div>
+          <div>
+            <label
+              htmlFor="content"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Content
+            </label>
+            <textarea
+              id="content"
+              rows={4}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              value={postData.description}
+              onChange={(e) =>
+                setPostData({ ...postData, description: e.target.value })
+              }
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="tags"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Tags
+            </label>
+            <div className="flex items-center space-x-2">
+              <input
+                id="tags"
+                className="flex-grow px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                type="text"
+                placeholder="Add a tag"
+              />
+              <button
+                type="button"
+                onClick={handleAddTag}
+                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              >
+                Add
+              </button>
+            </div>
+            <div className="flex flex-wrap mt-2">
+              {postData.tagNames.map((tag) => (
+                <span
+                  key={tag}
+                  className="bg-gray-200 text-gray-700 text-sm font-semibold rounded-full py-1 px-3 m-1 flex items-center"
+                >
+                  {tag}
+                  <button
+                    type="button"
+                    title="Remove tag"
+                    className="ml-2 focus:outline-none"
+                    onClick={() => {
+                      setPostData({
+                        ...postData,
+                        tagNames: postData.tagNames.filter((t) => t !== tag),
+                      });
+                    }}
+                  >
+                    <svg
+                      className="w-4 h-4 text-gray-500 hover:text-gray-700"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M6 18L18 6M6 6l12 12"
+                      ></path>
+                    </svg>
+                  </button>
+                </span>
+              ))}
+            </div>
+          </div>
+          <div>
+            <label
+              htmlFor="image"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Media
+            </label>
+            <input
+              type="file"
+              id="image"
+              accept=".jpg,.png,.jpeg,.mp4,.avi,.mkv,video/*"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              onChange={(e) => setSelectedMedia(e.target.files?.[0] || null)}
+            />
+          </div>
+        </form>
+        <div className="mt-6">
+          <button
+            className="w-full bg-blue-500 text-white rounded-md py-2 px-4 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            onClick={handleSubmit}
+          >
+            Create Post
+          </button>
         </div>
       </div>
     </div>
@@ -166,10 +181,9 @@ const CreatePost = () => {
 
 const CreatePostPage = () => {
   return (
-    <div className="xl:grid xl:grid-cols-12">
+    <div className="xl:grid xl:grid-cols-12 bg-gray-100 min-h-screen">
       <LeftSidebar />
       <CreatePost />
-      <div></div>
     </div>
   );
 };

@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react';
-import LeftSidebar from '../../components/LeftSidebar';
-import { fetchFriendsSearch } from '../../api';
-import { checkJwt } from '../../../utils/auth';
-import { IUser } from '../../../types';
-import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { IUser } from '../../../types';
+import { checkJwt } from '../../../utils/auth';
+import { fetchFriendsSearch } from '../../api';
+import LeftSidebar from '../../components/LeftSidebar';
 const API_URL = import.meta.env.VITE_API_URL;
 
 const SearchFriendsPage = () => {

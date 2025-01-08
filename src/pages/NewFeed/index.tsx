@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
 import LeftSidebar from '../../components/LeftSidebar';
-import { IPost, IUser } from '../../../types';
+import { IPost } from '../../../types';
 import { fetchPostsRecomendation } from '../../api';
 import Post from '../../components/Post';
-import { checkJwt } from '../../../utils/auth';
 
 type IReponse = {
   data: IPost[];
@@ -43,15 +42,8 @@ const ListPost = () => {
   );
 };
 const NewFeedPage = () => {
-  const [currentUser, setCurrentUser] = useState<IUser | null>(null);
 
   useEffect(() => {
-    async function fetchCurrentUser() {
-      const response: IUser | null = await checkJwt();
-      setCurrentUser(response);
-    }
-
-    fetchCurrentUser();
   }, []);
   return (
     <div className="xl:grid xl:grid-cols-12">

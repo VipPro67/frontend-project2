@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
-import LeftSidebar from '../../components/LeftSidebar';
-import { IPet, IUser } from '../../../types';
 import { Link } from 'react-router-dom';
+import { IPet } from '../../../types';
 import { fetchPetsPair } from '../../api';
-
+import LeftSidebar from '../../components/LeftSidebar';
 const API_URL = import.meta.env.VITE_API_URL;
 
 const PairPetsPage = () => {

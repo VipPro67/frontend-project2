@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
 import { fetchPetsSearch } from '../../api';
 import LeftSidebar from '../../components/LeftSidebar';
-import { IPet, IUser } from '../../../types';
+import { IPet } from '../../../types';
 import { Link } from 'react-router-dom';
-import { checkJwt } from '../../../utils/auth';
 type IResponse = {
   data: IPet[];
   total: number;
@@ -14,12 +13,9 @@ type IResponse = {
   prePage: number | null;
 };
 const PetsPage = () => {
-  const [currentUser, setCurrentUser] = useState<IUser | null>(null);
 
   useEffect(() => {
     async function fetchCurrentUser() {
-      const response: IUser | null = await checkJwt();
-      setCurrentUser(response);
     }
 
     fetchCurrentUser();

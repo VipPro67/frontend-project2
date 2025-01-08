@@ -1,16 +1,12 @@
 import { Link } from 'react-router-dom';
 import { IComment } from '../../../types';
-import { useEffect, useState } from 'react';
-import { checkJwt } from '../../../utils/auth';
+import { useEffect } from 'react';
 
 const Comment = (comment: IComment) => {
   const commentCreateAt = new Date(comment.created_at);
-  const currentTime = new Date();
-  const [currentUser, setCurrentUser] = useState<any>();
 
   useEffect(() => {
     const getCurrentUser = async () => {
-      setCurrentUser(checkJwt());
     };
     getCurrentUser();
   }, []);

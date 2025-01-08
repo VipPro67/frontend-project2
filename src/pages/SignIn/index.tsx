@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { IUser } from '../../../types';
 import { checkJwt } from '../../../utils/auth';
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -28,7 +27,7 @@ const SignIn = () => {
       return;
     }
 
-    const response = await axios
+    await axios
       .post(
         `${API_URL}/auth/login`,
         {

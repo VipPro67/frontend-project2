@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'; // Import React and useEffect
+import { useEffect, useState } from 'react'; // Import React and useEffect
 import { Link } from 'react-router-dom';
 import { IUser } from '../../../types';
 import { checkJwt } from '../../../utils/auth';
@@ -6,9 +6,6 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 const Header = () => {
   const [user, setUser] = useState<IUser | null>(null);
-  const [showAllChat, setShowAllChat] = useState(false);
-  const [showChat, setShowChat] = useState(false);
-  const [listConversation, setListConversation] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -18,16 +15,14 @@ const Header = () => {
 
     fetchUser();
 
-    const fetchConversation = async () => {
-      const response = await fetch(`${API_URL}/api/v1/messages/conversations`, {
+    async () => {
+      await fetch(`${API_URL}/api/v1/messages/conversations`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${localStorage.getItem('access_token')}`,
         },
       });
-      const data = await response.json();
-      setListConversation(data);
     };
   }, []); // Run once when the component mounts
 

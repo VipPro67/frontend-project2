@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react';
-import { IComment, IMedia, IPost, ITag } from '../../../types';
-import Comment from '../Comment';
-import { fetchCommentsByPostId } from '../../api';
-import { Link } from 'react-router-dom';
-import { checkJwt } from '../../../utils/auth';
 import axios from 'axios';
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { IComment, IMedia, IPost, ITag } from '../../../types';
+import { checkJwt } from '../../../utils/auth';
+import { fetchCommentsByPostId } from '../../api';
+import Comment from '../Comment';
 const API_URL = import.meta.env.VITE_API_URL;
 
 const ListComment = (post: IPost) => {
@@ -57,7 +57,7 @@ const ListComment = (post: IPost) => {
       );
 
       // Handle the response as needed (e.g., update state, show notifications)
-      const result = response.data;
+      response.data;
 
       // After submitting, you might want to refetch the comments
       const updatedComments = await fetchCommentsByPostId(post.id);
@@ -158,7 +158,6 @@ const Post = (post: IPost) => {
   const [totalLike, setTotalLike] = useState(post.likes?.length ?? 0);
   const postCreatedAt = new Date(post.created_at);
   const [isEditPost, setIsEditPost] = useState(false);
-  const currentTime = new Date();
   // const timeDifference = () => {
   //   var days = currentTime.getDate() - postCreatedAt.getDate();
   //   var hours = currentTime.getHours() - postCreatedAt.getHours();
@@ -306,7 +305,7 @@ const Post = (post: IPost) => {
       formData.append(`tagNames[${index}]`, tag);
     });
     try {
-      const res = axios
+      axios
         .put(`${API_URL}/api/v1/posts/` + post.id, formData, {
           headers: {
             'Content-Type': 'form-data',

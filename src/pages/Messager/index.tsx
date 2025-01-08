@@ -1,10 +1,10 @@
+import axios from 'axios';
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import io from 'socket.io-client';
+import { IMessage } from '../../../types';
 import { checkJwt } from '../../../utils/auth';
 import { fetchAllMyConservation } from '../../api';
-import { IMessage } from '../../../types';
-import io from 'socket.io-client';
-import axios from 'axios';
 const API_URL = import.meta.env.VITE_API_URL;
 
 const MessagerPage = () => {

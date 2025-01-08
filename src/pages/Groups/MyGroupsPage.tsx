@@ -1,16 +1,15 @@
 import { useEffect, useState } from 'react';
 import LeftSidebar from '../../components/LeftSidebar';
 
+import axios from 'axios';
 import { Link } from 'react-router-dom';
-import { IGroup, IPost, IUser } from '../../../types';
+import { IGroup, IPost } from '../../../types';
 import {
-  fetchGroupsSearch,
-  fetchMyGroups,
-  fetchPostsByUserGroups,
+    fetchGroupsSearch,
+    fetchMyGroups,
+    fetchPostsByUserGroups,
 } from '../../api';
 import Post from '../../components/Post';
-import axios from 'axios';
-import { checkJwt } from '../../../utils/auth';
 
 type IResponse = {
   data: IGroup[];
@@ -37,15 +36,8 @@ const MyGroupsPage = () => {
   if (!accessToken) {
     window.location.href = '/sign-in';
   }
-  const [currentUser, setCurrentUser] = useState<IUser | null>(null);
 
   useEffect(() => {
-    async function fetchCurrentUser() {
-      const response: IUser | null = await checkJwt();
-      setCurrentUser(response);
-    }
-
-    fetchCurrentUser();
   }, []);
 
   useEffect(() => {

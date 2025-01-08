@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
 import LeftSidebar from '../../components/LeftSidebar';
-
-import { Link } from 'react-router-dom';
-import { IGroup, IUser } from '../../../types';
 import { fetchGroupsSearch } from '../../api';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
+import { IGroup, IUser } from '../../../types';
 import { checkJwt } from '../../../utils/auth';
 const API_URL = import.meta.env.VITE_API_URL;
 

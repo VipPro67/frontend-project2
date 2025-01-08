@@ -1,16 +1,16 @@
+import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { IPet, IPost, IUser } from '../../../types';
-import LeftSidebar from '../../components/LeftSidebar';
-import Post from '../../components/Post';
+import { checkJwt } from '../../../utils/auth';
 import {
   fetchPetsByUserId,
   fetchPostsByUserId,
   fetchUsersById,
 } from '../../api';
-import { checkJwt } from '../../../utils/auth';
+import LeftSidebar from '../../components/LeftSidebar';
 import Pet from '../../components/Pet';
-import { Link } from 'react-router-dom';
-import axios from 'axios';
+import Post from '../../components/Post';
 const API_URL = import.meta.env.VITE_API_URL;
 
 const ProfilePage = () => {

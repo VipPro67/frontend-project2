@@ -1,11 +1,11 @@
+import axios from 'axios';
 import { useEffect, useState } from 'react';
-import LeftSidebar from '../../components/LeftSidebar';
 import { Link, useParams } from 'react-router-dom';
 import { IGroup, IPost, IUser } from '../../../types';
-import { fetchGroupsById, fetchPostsByGroupId } from '../../api';
-import Post from '../../components/Post';
 import { checkJwt } from '../../../utils/auth';
-import axios from 'axios';
+import { fetchGroupsById, fetchPostsByGroupId } from '../../api';
+import LeftSidebar from '../../components/LeftSidebar';
+import Post from '../../components/Post';
 const API_URL = import.meta.env.VITE_API_URL;
 
 const GroupsProfilePage = () => {
@@ -57,8 +57,7 @@ const GroupsProfilePage = () => {
     postData.tagNames.forEach((tag, index) => {
       formData.append(`tagNames[${index}]`, tag);
     });
-    try {
-      const res = axios
+    try {axios
         .post(`${API_URL}/api/v1/posts`, formData, {
           headers: {
             'Content-Type': 'form-data',
@@ -76,7 +75,7 @@ const GroupsProfilePage = () => {
 
   const handleJoinGroup = () => {
     try {
-      const res = axios
+      axios
         .post(
           `${API_URL}/api/v1/groups/${group?.id}/join`,
           {},
@@ -101,7 +100,7 @@ const GroupsProfilePage = () => {
     }
 
     try {
-      const res = axios
+      axios
         .post(
           `${API_URL}/api/v1/groups/${group?.id}/leave`,
           {},

@@ -1,6 +1,6 @@
+import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { IPet, IUser } from '../../../types';
-import axios from 'axios';
 import { checkJwt } from '../../../utils/auth';
 const API_URL = import.meta.env.VITE_API_URL;
 

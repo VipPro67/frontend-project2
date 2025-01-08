@@ -1,23 +1,15 @@
+import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { fetchMyPets } from '../../api';
 import LeftSidebar from '../../components/LeftSidebar';
 import Pet from '../../components/Pet';
-import { IPet, IUser } from '../../../types';
-import { Link } from 'react-router-dom';
-import axios from 'axios';
-import { checkJwt } from '../../../utils/auth';
+import { IPet } from '../../../types';
 const API_URL = import.meta.env.VITE_API_URL;
 
 const MyPetsPage = () => {
-  const [currentUser, setCurrentUser] = useState<IUser | null>(null);
 
   useEffect(() => {
-    async function fetchCurrentUser() {
-      const response: IUser | null = await checkJwt();
-      setCurrentUser(response);
-    }
-
-    fetchCurrentUser();
   }, []);
   const [listPets, setListPets] = useState<any | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
