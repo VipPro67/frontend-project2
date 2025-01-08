@@ -42,39 +42,39 @@ const ListPost = () => {
   );
 };
 const HomePage = () => {
-  const showChat = () => {
-    const chat = document.getElementById('chatbot');
-    if (chat) {
-      chat.style.display = 'block';
-    }
-    const btn = document.getElementById('btn-close-chat');
-    if (btn) {
-      btn.style.display = 'block';
-    }
-    const btn1 = document.getElementById('btn-chat');
-    if (btn1) {
-      btn1.style.display = 'none';
-    }
-  };
-  const closeChat = () => {
-    const chat = document.getElementById('chatbot');
-    if (chat) {
-      chat.style.display = 'none';
-    }
-    const btn = document.getElementById('btn-close-chat');
-    if (btn) {
-      btn.style.display = 'none';
-    }
-    const btn1 = document.getElementById('btn-chat');
-    if (btn1) {
-      btn1.style.display = 'block';
-    }
-  };
+  // const showChat = () => {
+  //   const chat = document.getElementById('chatbot');
+  //   if (chat) {
+  //     chat.style.display = 'block';
+  //   }
+  //   const btn = document.getElementById('btn-close-chat');
+  //   if (btn) {
+  //     btn.style.display = 'block';
+  //   }
+  //   const btn1 = document.getElementById('btn-chat');
+  //   if (btn1) {
+  //     btn1.style.display = 'none';
+  //   }
+  // };
+  // const closeChat = () => {
+  //   const chat = document.getElementById('chatbot');
+  //   if (chat) {
+  //     chat.style.display = 'none';
+  //   }
+  //   const btn = document.getElementById('btn-close-chat');
+  //   if (btn) {
+  //     btn.style.display = 'none';
+  //   }
+  //   const btn1 = document.getElementById('btn-chat');
+  //   if (btn1) {
+  //     btn1.style.display = 'block';
+  //   }
+  // };
   return (
     <div className="xl:grid xl:grid-cols-12 ">
       <LeftSidebar />
       <ListPost />
-      <div className=" fixed bottom-0 right-0 ">
+      {/* <div className=" fixed bottom-0 right-0 ">
         <button
           id="btn-chat"
           onClick={showChat}
@@ -104,7 +104,7 @@ const HomePage = () => {
             className="hidden"
           ></iframe>
         </div>
-      </div>
+      </div> */}
       {/* <div className=" fixed bottom-16 right-0 ">
         <button
           id="btn-chat"
