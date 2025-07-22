@@ -11,7 +11,7 @@ const API_URL = import.meta.env.VITE_API_URL
 
 const SearchFriendsPage = () => {
   const [currentUser, setCurrentUser] = useState<IUser | null>(null)
-  const [view, setView] = useState("searchFriends")
+  const [view,] = useState("searchFriends")
   const [searchResult, setSearchResult] = useState<any | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
@@ -117,36 +117,32 @@ const SearchFriendsPage = () => {
                 <div className="flex overflow-x-auto scrollbar-hide space-x-1">
                   <Link to="/friends" className="flex-shrink-0">
                     <button
-                      className={`px-4 py-2.5 rounded-lg font-medium transition-colors duration-200 text-sm whitespace-nowrap ${
-                        view == "listFriends" ? "bg-blue-600 text-white" : "text-gray-600 hover:bg-gray-100"
-                      }`}
+                      className={`px-4 py-2.5 rounded-lg font-medium transition-colors duration-200 text-sm whitespace-nowrap ${view == "listFriends" ? "bg-blue-600 text-white" : "text-gray-600 hover:bg-gray-100"
+                        }`}
                     >
                       All Friends
                     </button>
                   </Link>
                   <Link to="/friends/search" className="flex-shrink-0">
                     <button
-                      className={`px-4 py-2.5 rounded-lg font-medium transition-colors duration-200 text-sm whitespace-nowrap ${
-                        view == "searchFriends" ? "bg-blue-600 text-white" : "text-gray-600 hover:bg-gray-100"
-                      }`}
+                      className={`px-4 py-2.5 rounded-lg font-medium transition-colors duration-200 text-sm whitespace-nowrap ${view == "searchFriends" ? "bg-blue-600 text-white" : "text-gray-600 hover:bg-gray-100"
+                        }`}
                     >
                       Find Friends
                     </button>
                   </Link>
                   <Link to="/friends/friends-request" className="flex-shrink-0">
                     <button
-                      className={`px-4 py-2.5 rounded-lg font-medium transition-colors duration-200 text-sm whitespace-nowrap ${
-                        view == "friendsRequest" ? "bg-blue-600 text-white" : "text-gray-600 hover:bg-gray-100"
-                      }`}
+                      className={`px-4 py-2.5 rounded-lg font-medium transition-colors duration-200 text-sm whitespace-nowrap ${view == "friendsRequest" ? "bg-blue-600 text-white" : "text-gray-600 hover:bg-gray-100"
+                        }`}
                     >
                       Friend Requests
                     </button>
                   </Link>
                   <Link to="/friends/friends-sent" className="flex-shrink-0">
                     <button
-                      className={`px-4 py-2.5 rounded-lg font-medium transition-colors duration-200 text-sm whitespace-nowrap ${
-                        view == "friendsSent" ? "bg-blue-600 text-white" : "text-gray-600 hover:bg-gray-100"
-                      }`}
+                      className={`px-4 py-2.5 rounded-lg font-medium transition-colors duration-200 text-sm whitespace-nowrap ${view == "friendsSent" ? "bg-blue-600 text-white" : "text-gray-600 hover:bg-gray-100"
+                        }`}
                     >
                       Sent Requests
                     </button>

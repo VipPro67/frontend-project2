@@ -13,7 +13,6 @@ const API_URL = import.meta.env.VITE_API_URL
 const FriendsRequestPage = () => {
   const [listRelationships, setListRelationships] = useState<any | null>(null)
   const [currentUser, setCurrentUser] = useState<IUser | null>(null)
-  const [view, setView] = useState("friendsRequest")
   const [isLoading, setIsLoading] = useState(false)
   const [notification, setNotification] = useState<{ message: string; type: "success" | "error" } | null>(null)
 
