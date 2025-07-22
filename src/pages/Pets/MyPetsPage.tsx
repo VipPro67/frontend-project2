@@ -1,245 +1,178 @@
-import axios from 'axios';
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { fetchMyPets } from '../../api';
-import LeftSidebar from '../../components/LeftSidebar';
-import Pet from '../../components/Pet';
-import { IPet } from '../../../types';
-const API_URL = import.meta.env.VITE_API_URL;
+"use client"
+
+import axios from "axios"
+import { useEffect, useState } from "react"
+import { Link } from "react-router-dom"
+import { fetchMyPets } from "../../api"
+import LeftSidebar from "../../components/LeftSidebar"
+import Pet from "../../components/Pet"
+import type { IPet } from "../../../types"
+const API_URL = import.meta.env.VITE_API_URL
 
 const MyPetsPage = () => {
-
-  useEffect(() => {
-  }, []);
-  const [listPets, setListPets] = useState<any | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [view, setView] = useState('myPets');
+  const [listPets, setListPets] = useState<any | null>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [view, setView] = useState("myPets")
   const [formData, setFormData] = useState({
-    name: '',
-    date_of_birth: '',
-    species: '',
-    sex: '',
-    breed: '',
-    description: '',
+    name: "",
+    date_of_birth: "",
+    species: "",
+    sex: "Male",
+    breed: "",
+    description: "",
     avatar: null as File | null,
-  });
-  const [selectedMedia, setSelectedMedia] = useState<File | null>(null);
+  })
+  const [selectedMedia, setSelectedMedia] = useState<File | null>(null)
 
   useEffect(() => {
     const fetchData = async () => {
-      const response: any = await fetchMyPets();
+      const response: any = await fetchMyPets()
       setListPets({
         response,
-      });
-    };
-    fetchData();
-  }, []); // Empty dependency array ensures the effect runs only once
+      })
+    }
+    fetchData()
+  }, [])
 
   const handlerSubmit = () => {
-    const formDataP = new FormData();
-    formDataP.append('name', formData.name);
-    formDataP.append('date_of_birth', formData.date_of_birth);
-    formDataP.append('species', formData.species);
-    formDataP.append('sex', formData.sex);
-    formDataP.append('breed', formData.breed);
-    formDataP.append('description', formData.description);
+    const formDataP = new FormData()
+    formDataP.append("name", formData.name)
+    formDataP.append("date_of_birth", formData.date_of_birth)
+    formDataP.append("species", formData.species)
+    formDataP.append("sex", formData.sex)
+    formDataP.append("breed", formData.breed)
+    formDataP.append("description", formData.description)
     if (selectedMedia) {
-      formDataP.append('avatar', selectedMedia);
+      formDataP.append("avatar", selectedMedia)
     }
     axios
       .post(`${API_URL}/api/v1/pets`, formDataP, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
         },
       })
       .then((res) => {
-        console.log(res);
-        setIsModalOpen(false);
-        window.location.reload();
+        console.log(res)
+        setIsModalOpen(false)
+        window.location.reload()
       })
       .catch((err) => {
-        console.log(err);
-      });
-  };
+        console.log(err)
+      })
+  }
 
   const addNewPet = () => {
     return (
-      <div className="fixed z-10 inset-0 overflow-y-auto">
+      <div className="fixed z-50 inset-0 overflow-y-auto">
         <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-          {/* Background overlay, show/hide based on modal state. */}
           <div
-            className="fixed inset-0 transition-opacity"
+            className="fixed inset-0 transition-opacity bg-gray-900 bg-opacity-50"
             aria-hidden="true"
             onClick={() => setIsModalOpen(false)}
-          >
-            <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
-          </div>
-          {/* This element is to trick the browser into centering the modal contents. */}
-          <span
-            className="hidden sm:inline-block sm:align-middle sm:h-screen"
-            aria-hidden="true"
-          >
+          />
+          <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">
             &#8203;
           </span>
-          {/* Modal panel, show/hide based on modal state. */}
-          <div
-            className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="modal-headline"
-          >
-            <form className="w-full max-w-lg xl:p-4">
-              <div className="grid mx-3 mb-6">
-                <h1 className="text-2xl font-bold">Add New Pet</h1>
-                <div className="w-full px-3 mb-6 md:mb-0">
-                  <label
-                    className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                    htmlFor="pet-name"
-                  >
-                    Name
-                  </label>
-                  <input
-                    className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 px-4 mb-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                    id="pet-name"
-                    type="text"
-                    placeholder="Buddy"
-                    value={formData.name}
-                    onChange={(e) =>
-                      setFormData({ ...formData, name: e.target.value })
-                    }
-                  />
-                </div>
-                <div className="w-full px-3 mb-6 md:mb-0">
-                  <label
-                    className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                    htmlFor="pet-dob"
-                  >
-                    Date of Birth
-                  </label>
-                  <input
-                    className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 px-4 mb-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                    id="pet-dob"
-                    type="date"
-                    placeholder="Buddy"
-                    value={formData.date_of_birth}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        date_of_birth: e.target.value,
-                      })
-                    }
-                  />
-                </div>
-                <div className="w-full px-3 mb-6 md:mb-0">
-                  <label
-                    className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                    htmlFor="pet-species"
-                  >
-                    Species
-                  </label>
-                  <input
-                    className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                    id="pet-sp"
-                    type="text"
-                    placeholder="Dog"
-                    value={formData.species}
-                    onChange={(e) =>
-                      setFormData({ ...formData, species: e.target.value })
-                    }
-                  />
-                </div>
-                <div className="w-full px-3 mb-6 md:mb-0">
-                  <label
-                    className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                    htmlFor="pet-breed"
-                  >
-                    Breed
-                  </label>
-                  <input
-                    className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                    id="pet-breed"
-                    type="text"
-                    placeholder="Golden Retriever"
-                    value={formData.breed}
-                    onChange={(e) =>
-                      setFormData({ ...formData, breed: e.target.value })
-                    }
-                  />
-                </div>
-
-                <div className="w-full px-3 mb-6 md:mb-0">
-                  <label
-                    className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                    htmlFor="pet-sex"
-                  >
-                    Sex
-                  </label>
-
-                  <select
-                    id="pet-sex"
-                    className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                    value={formData.sex}
-                    onChange={(e) =>
-                      setFormData({ ...formData, sex: e.target.value })
-                    }
-                  >
-                    <option value="Male" className="bg-gray-200">
-                      {' '}
-                      Male
-                    </option>
-                    <option value="Female" className="bg-gray-200">
-                      Female
-                    </option>
-                  </select>
-                </div>
-                <div className="w-full px-3 mb-6 md:mb-0">
-                  <label
-                    className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                    htmlFor="description"
-                  >
-                    Description
-                  </label>
-                  <textarea
-                    className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                    id="description"
-                    placeholder="Buddy is a very cute dog and he is very friendly"
-                    value={formData.description}
-                    onChange={(e) =>
-                      setFormData({ ...formData, description: e.target.value })
-                    }
-                  />
-                </div>
-                <div className="w-full px-3 mb-6 md:mb-0">
-                  <label
-                    className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                    htmlFor="pet-image"
-                  >
-                    Image
-                  </label>
-                  <input
-                    className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                    id="pet-image"
-                    type="file"
-                    accept=".jpg,.png,.jpeg,.mp4,.avi,.mkv"
-                    onChange={(e) =>
-                      setSelectedMedia(e.target.files?.[0] || null)
-                    }
-                  />
-                </div>
+          <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+            <div className="bg-white px-6 pt-6">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-2xl font-bold text-gray-900">Add New Pet</h3>
+                <button
+                  onClick={() => setIsModalOpen(false)}
+                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
               </div>
-            </form>
 
-            <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-              <button
-                type="button"
-                className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-500 text-base font-medium text-white hover:bg-blue-700 focus:outline-none  sm:ml-3 sm:w-auto sm:text-sm"
-                onClick={handlerSubmit}
-              >
-                Add
+              <form className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Pet Name</label>
+                  <input
+                    className="facebook-input"
+                    type="text"
+                    placeholder="Enter your pet's name"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Date of Birth</label>
+                  <input
+                    className="facebook-input"
+                    type="date"
+                    value={formData.date_of_birth}
+                    onChange={(e) => setFormData({ ...formData, date_of_birth: e.target.value })}
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Species</label>
+                    <input
+                      className="facebook-input"
+                      type="text"
+                      placeholder="Dog, Cat, etc."
+                      value={formData.species}
+                      onChange={(e) => setFormData({ ...formData, species: e.target.value })}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Sex</label>
+                    <select
+                      className="facebook-input"
+                      value={formData.sex}
+                      onChange={(e) => setFormData({ ...formData, sex: e.target.value })}
+                    >
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Breed</label>
+                  <input
+                    className="facebook-input"
+                    type="text"
+                    placeholder="Golden Retriever, Persian, etc."
+                    value={formData.breed}
+                    onChange={(e) => setFormData({ ...formData, breed: e.target.value })}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                  <textarea
+                    className="facebook-input h-24 resize-none"
+                    placeholder="Tell us about your pet's personality..."
+                    value={formData.description}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Pet Photo</label>
+                  <input
+                    className="facebook-input"
+                    type="file"
+                    accept=".jpg,.png,.jpeg"
+                    onChange={(e) => setSelectedMedia(e.target.files?.[0] || null)}
+                  />
+                </div>
+              </form>
+            </div>
+
+            <div className="bg-gray-50 px-6 py-4 sm:flex sm:flex-row-reverse">
+              <button type="button" className="btn-facebook w-full sm:w-auto sm:ml-3" onClick={handlerSubmit}>
+                Add Pet
               </button>
               <button
                 type="button"
-                className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-gray-50 text-base font-medium text-gray-700 hover:bg-gray-100 focus:outline-none  sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                className="btn-facebook-secondary w-full sm:w-auto mt-3 sm:mt-0"
                 onClick={() => setIsModalOpen(false)}
               >
                 Cancel
@@ -248,73 +181,103 @@ const MyPetsPage = () => {
           </div>
         </div>
       </div>
-    );
-  };
+    )
+  }
 
   return (
-    <div className="xl:grid xl:grid-cols-12 ">
-      <LeftSidebar />
-      <div className=" xl:col-span-10 xl:p-2 xl:rounded-xl bg-white xl:m-2 ">
-        <div className=" gird">
-          <Link to="/pets/my-pets">
-            <button
-              className={
-                view == 'myPets'
-                  ? 'm-2 border-2 rounded-2xl text-center font-bold p-2 underline'
-                  : 'm-2 border-2 rounded-2xl text-center font-bold p-2'
-              }
-              onClick={() => setView('myPets')}
-            >
-              My Pets
-            </button>
-          </Link>
-          <Link to="/pets">
-            <button
-              className={
-                view == 'searchPets'
-                  ? 'm-2 border-2 rounded-2xl text-center font-bold p-2 underline'
-                  : 'm-2 border-2 rounded-2xl text-center font-bold p-2'
-              }
-              onClick={() => setView('searchPets')}
-            >
-              Search Pet
-            </button>
-          </Link>
-        </div>
-        {view == 'myPets' ? (
-          <div>
-            <h1
-              className="text-2xl text-center font-bold m-2"
-              onClick={() => {
-                setView('myPets');
-              }}
-            >
-              My Pets{' '}
-            </h1>
-            <div className="flex justify-end">
-              <button
-                className="bg-blue-500  hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                onClick={() => {
-                  setIsModalOpen(true);
-                }}
-              >
-                Add New Pet
-              </button>
+    <div className="min-h-screen bg-gray-50">
+      <div className="flex">
+        <LeftSidebar />
+        <div className="flex-1 ">
+          <div className="max-w-7xl mx-auto p-6">
+            {/* Header */}
+            <div className="mb-8">
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">My Pets</h1>
+              <p className="text-gray-600">Manage and showcase your beloved companions</p>
             </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 md:gap-4">
-              {listPets
-                ? listPets.response.map((pet: IPet) => (
-                    <Pet key={pet.id} {...pet} />
-                  ))
-                : null}
-            </div>
-          </div>
-        ) : null}
-        {isModalOpen ? addNewPet() : null}
-      </div>
-      <div></div>
-    </div>
-  );
-};
 
-export default MyPetsPage;
+            {/* Navigation Tabs */}
+            <div className="facebook-card p-1 mb-6">
+              <div className="flex space-x-1">
+                <Link to="/pets/my-pets">
+                  <button
+                    className={`px-6 py-3 rounded-lg font-medium transition-colors duration-200 ${view == "myPets" ? "bg-blue-600 text-white" : "text-gray-600 hover:bg-gray-100"
+                      }`}
+                    onClick={() => setView("myPets")}
+                  >
+                    My Pets
+                  </button>
+                </Link>
+                <Link to="/pets">
+                  <button
+                    className={`px-6 py-3 rounded-lg font-medium transition-colors duration-200 ${view == "searchPets" ? "bg-blue-600 text-white" : "text-gray-600 hover:bg-gray-100"
+                      }`}
+                    onClick={() => setView("searchPets")}
+                  >
+                    Discover Pets
+                  </button>
+                </Link>
+              </div>
+            </div>
+
+            {view == "myPets" && (
+              <div>
+                {/* Action Bar */}
+                <div className="flex justify-between items-center mb-6">
+                  <div>
+                    <h2 className="text-xl font-semibold text-gray-900">Your Pets</h2>
+                    <p className="text-gray-500">
+                      {listPets?.response?.length || 0} pet{listPets?.response?.length !== 1 ? "s" : ""}
+                    </p>
+                  </div>
+                  <button className="btn-facebook flex items-center space-x-2" onClick={() => setIsModalOpen(true)}>
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                      />
+                    </svg>
+                    <span>Add New Pet</span>
+                  </button>
+                </div>
+
+                {/* Pets Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  {listPets?.response?.map((pet: IPet) => (
+                    <Pet key={pet.id} {...pet} />
+                  ))}
+                </div>
+
+                {(!listPets?.response || listPets.response.length === 0) && (
+                  <div className="text-center py-12">
+                    <div className="w-24 h-24 mx-auto mb-4 bg-blue-50 rounded-full flex items-center justify-center">
+                      <svg className="w-12 h-12 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                        />
+                      </svg>
+                    </div>
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">No pets yet</h3>
+                    <p className="text-gray-500 mb-4">Add your first pet to get started!</p>
+                    <button className="btn-facebook" onClick={() => setIsModalOpen(true)}>
+                      Add Your First Pet
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {isModalOpen && addNewPet()}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default MyPetsPage

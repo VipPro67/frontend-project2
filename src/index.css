@@ -1,22 +1,193 @@
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-body::-webkit-scrollbar {
-  display: auto;
+/* Custom Facebook-like styles */
+@layer components {
+  .facebook-card {
+    @apply bg-white rounded-lg shadow-sm border border-gray-200;
+  }
+
+  .facebook-input {
+    @apply w-full px-3 py-2 sm:px-4 sm:py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm sm:text-base;
+  }
+
+  .btn-facebook {
+    @apply inline-flex items-center justify-center px-4 py-2 sm:px-6 sm:py-2.5 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200 text-sm sm:text-base;
+  }
+
+  .btn-facebook-secondary {
+    @apply inline-flex items-center justify-center px-4 py-2 sm:px-6 sm:py-2.5 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors duration-200 text-sm sm:text-base;
+  }
+
+  .rounded-facebook {
+    @apply rounded-lg;
+  }
+
+  .shadow-facebook {
+    @apply shadow-sm;
+  }
+
+  .avatar {
+    @apply rounded-full object-cover;
+  }
+
+  .avatar-sm {
+    @apply w-6 h-6 sm:w-8 sm:h-8;
+  }
+
+  .avatar-md {
+    @apply w-8 h-8 sm:w-10 sm:h-10;
+  }
+
+  .avatar-lg {
+    @apply w-10 h-10 sm:w-12 sm:h-12;
+  }
+
+  .avatar-xl {
+    @apply w-12 h-12 sm:w-16 sm:h-16;
+  }
+
+  .post-action-btn {
+    @apply flex items-center justify-center space-x-1 sm:space-x-2 px-2 sm:px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors duration-200 text-sm sm:text-base;
+  }
+
+  .post-action-btn.liked {
+    @apply text-blue-600;
+  }
+
+  /* Text truncation utilities */
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
 }
 
-body {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
 }
 
-.site-wrapper {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
 }
 
-* {
-  @apply focus:outline-green-900/60;
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Facebook color scheme */
+:root {
+  --facebook-blue: #1877f2;
+  --facebook-blue-hover: #166fe5;
+  --facebook-gray: #f0f2f5;
+  --facebook-dark-gray: #65676b;
+}
+
+.text-facebook-600 {
+  color: var(--facebook-blue);
+}
+
+.bg-facebook-600 {
+  background-color: var(--facebook-blue);
+}
+
+.hover\:bg-facebook-700:hover {
+  background-color: var(--facebook-blue-hover);
+}
+
+/* Responsive utilities */
+@media (max-width: 640px) {
+  .facebook-card {
+    @apply mx-1 rounded-lg;
+  }
+}
+
+/* Loading animation */
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Mobile-first responsive design */
+.container-responsive {
+  @apply px-2 sm:px-4 md:px-6 lg:px-8;
+}
+
+.text-responsive {
+  @apply text-sm sm:text-base;
+}
+
+.heading-responsive {
+  @apply text-lg sm:text-xl md:text-2xl lg:text-3xl;
+}
+
+/* Touch-friendly buttons for mobile */
+@media (max-width: 768px) {
+  .btn-facebook,
+  .btn-facebook-secondary {
+    @apply min-h-[44px] min-w-[44px];
+  }
+
+  .post-action-btn {
+    @apply min-h-[44px];
+  }
+}
+
+/* Improved focus states for accessibility */
+.facebook-input:focus,
+.btn-facebook:focus,
+.btn-facebook-secondary:focus {
+  @apply ring-2 ring-offset-2;
+}
+
+/* Better mobile navigation */
+@media (max-width: 1024px) {
+  .mobile-nav-overlay {
+    @apply fixed inset-0 bg-black bg-opacity-50 z-40;
+  }
+}
+
+/* Mobile-optimized spacing */
+@media (max-width: 640px) {
+  .mobile-card-spacing {
+    @apply p-3;
+  }
+
+  .mobile-button-spacing {
+    @apply px-3 py-2;
+  }
 }
