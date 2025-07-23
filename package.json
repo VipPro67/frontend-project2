@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "clsx": "^2.1.0",
+    "tailwind-merge": "^2.2.0",
     "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
     "@kommunicate/kommunicate-chatbot-plugin": "^0.0.7",
     "@preact/signals": "^1.2.2",
@@ -25,6 +27,7 @@
     "ts-case-convert": "^2.0.2"
   },
   "devDependencies": {
+    "@types/clsx": "^2.0.0",
     "@heroicons/react": "^2.0.18",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
