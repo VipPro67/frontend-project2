@@ -83,7 +83,7 @@ const LeftSidebar = () => {
     },
     {
       name: "Pet Groups",
-      href: "/groups/my-groups",
+      href: "/groups/search",
       emoji: "👥",
     },
   ]
@@ -123,9 +123,8 @@ const LeftSidebar = () => {
               <Link
                 key={item.name}
                 to={item.href}
-                className={`flex items-center px-2 py-2 text-sm font-medium rounded-lg transition-colors ${
-                  isActive ? "bg-blue-50 text-blue-700" : "text-gray-700 hover:bg-gray-100"
-                }`}
+                className={`flex items-center px-2 py-2 text-sm font-medium rounded-lg transition-colors ${isActive ? "bg-blue-50 text-blue-700" : "text-gray-700 hover:bg-gray-100"
+                  }`}
               >
                 <span className={`${isActive ? "text-blue-700" : "text-gray-400"}`}>{item.icon}</span>
                 <span className="ml-3">{item.name}</span>

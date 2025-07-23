@@ -154,6 +154,13 @@ const GroupsPage = () => {
                     My Groups
                   </button>
                 </Link>
+                <button
+                  className={`px-6 py-3 rounded-lg font-medium transition-colors duration-200 ${view == "groupFeed" ? "bg-blue-600 text-white" : "text-gray-600 hover:bg-gray-100"
+                    }`}
+                  onClick={() => setView("groupFeed")}
+                >
+                  Group Feed
+                </button>
                 <Link to="/groups/search">
                   <button
                     className={`px-6 py-3 rounded-lg font-medium transition-colors duration-200 ${view == "searchGroups" ? "bg-blue-600 text-white" : "text-gray-600 hover:bg-gray-100"
